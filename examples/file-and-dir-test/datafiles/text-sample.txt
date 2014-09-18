@@ -1,0 +1,5 @@
+English: Text sample
+French: Il n'y a pas de fumée sans feu.
+Japanese: これはテストです。
+Korean: 이것은 테스트입니다.
+the end

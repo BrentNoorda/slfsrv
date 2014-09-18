@@ -1,0 +1,117 @@
+<html>
+<head>
+    <script src="slfsrv-core.js" type="text/javascript"></script>
+    <script src="examples/cmd-shell/javascript/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <style>
+        .yucky-startup-message {
+            display: none;
+            font-size: 150%;
+            color: red;
+            max-width: 30em;
+        }
+        .command-line {
+            font-style: monospace;
+        }
+        .command-prompt {
+
+        }
+        li {
+            margin-top: .4em;
+        }
+    </style>
+</head>
+<body>
+    <noscript>
+        <p style="font-size:200%;color:red">Sorry. You must have scripts enabled to run this.</p>
+    </noscript>
+    <p id="loading" style="color:gray;">loading...</p>
+    <p id="not-run-from-slfsrv" class="yucky-startup-message">
+        Problem: EXAMPLES.html must be executed from the &quot;slfsrv&quot; executable, and
+        not simply as a web page in the browser.<br/><br/>
+        For example, from the command line you might execute:<br/><br/>
+        &nbsp; &nbsp; &nbsp; <tt>&gt; slfsrv EXAMPLES.html</tt>
+    </p>
+    <p id="not-run-with-jquery" class="yucky-startup-message">
+        Problem: jquery did not get loaded locally.<br/><br/>
+        EXAMPLES.HTML needs to be executed from the full slfsrv download, including those
+        samples in the &quot;examples&quot; subdirectory.<br/><br/>
+        For example, from the command line you might execute:<br/><br/>
+        &nbsp; &nbsp; &nbsp; <tt>&gt; slfsrv EXAMPLES.html</tt>
+    </p>
+    <div id="post-loading" style="display:none;max-width:50em;">
+
+        <h1>Example slfsrv applications and commands</h1>
+
+        <h2>EXAMPLE APPLICATIONS BUILT WITH HTML/JS/CSS USING THE BROWSER FOR UI:</h2>
+        <p>
+            A few examples built with slfsrv:
+        </p>
+        <ul>
+            <li id="example-helloworld">
+                <a href="javascript:void 0" onclick="example('helloworld/index.html')"><b>hello-world</b></a> -
+                very minimal example
+            </li>
+            <li id="example-globals">
+                <a href="javascript:void 0" onclick="example('globals/index.html')"><b>globals</b></a> -
+                display the values in the SLFSRV global
+            </li>
+            <li id="example-cmd-shell">
+                <a href="javascript:void 0" onclick="example('cmd-shell','index.html')"><b>cmd-shell</b></a> -
+                a simple command-line tool using your browser as the UI to demonstrate the
+                SLFSRV.exec() method (with command-line completion)
+            </li>
+            <li id="example-menus">
+                <a href="javascript:void 0" onclick="example('menu','main_menu.html')"><b>menu</b></a> -
+                demonstrate how a single menu in a browser window can link both to the web and to your local
+                programs and file system
+            </li>
+        </ul>
+        <p>
+            Examples to test individual slfsrv features:
+        </p>
+        <ul>
+            <li id="example-store-test">
+                <a href="javascript:void 0" onclick="example('','store-test/index.html')"><b>store-test</b></a> -
+                a short test of the SLFSRV.store() calls, which allow permanent data store on your
+                local computer
+            </li>
+            <li id="example-file-and-dir-test">
+                <a href="javascript:void 0" onclick="example('','file-and-dir-test/index.html')"><b>file-and-dir-test</b></a> -
+                a short test of the SLFSRV.dir... and SLFSRC.file... calls, which allow reading and writing of
+                your local file system
+            </li>
+            <li id="example-tempdir-test">
+                <a href="javascript:void 0" onclick="example('tempdir-test','index.html')"><b>tempdir-test</b></a> -
+                a short test of the SLFSRV.tempdir, which both creates temporary directories and can initialize
+                them with data from bundled or compiled slfsrv sources
+            </li>
+            <li>Library can be used as nested onsuccess/onerror callbacks or using Javascript Promises (.then().then().then()...)
+                <ul>
+                    <li id="example-callback-version">directory listing
+                        <a href="javascript:void 0" onclick="example('','recursive-file-list/callback-version.html')"><b>callback-version</b></a> -
+                        run pyramid-style using onsuccess/onerror callbacks
+                    </li>
+                    <li id="example-promises-version">directory listing
+                        <a href="javascript:void 0" onclick="example('','recursive-file-list/promises-version.html')"><b>promises-version</b></a> -
+                        run Javascript Promises version of all calls
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <h2>EXAMPLE COMMAND OPTIONS</h2>
+        <ul>
+            <li>
+                <a href="javascript:void 0" onclick="help()" class="command-line"><span class="command-prompt">?</span> slfsrv -help</a> -
+                show the slfsrv help screen
+            </li>
+
+
+    </div>
+
+    <script src="examples.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        // TODO move examples.js here
+    </script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+// proving Promises if not native to the browser (polyfill if no native Promises)
+// source from https://github.com/getify/native-promise-only
+/*! Native Promise Only
+    v0.7.6-a (c) Kyle Simpson
+    MIT License: http://getify.mit-license.org
+*/
+
+package webserver
+
+func native_promise_only_jsselfServingJsSrc() string {
+    return `//https://github.com/getify/native-promise-only
+(function(h,k,m){k[h]=k[h]||m();"undefined"!=typeof module&&module.exports?module.exports=k[h]:"function"==typeof define&&define.amd&&define(function(){return k[h]})})("Promise","undefined"!=typeof global?global:this,function(){function h(a,b){p.add(a,b);q||(q=w(p.drain))}function k(a){var b,c=typeof a;null==a||"object"!=c&&"function"!=c||(b=a.then);return"function"==typeof b?b:!1}function m(){for(var a=0;a<this.chain.length;a++){var b=1===this.state?this.chain[a].success:this.chain[a].failure,c=
+this.chain[a],d=void 0,e=void 0;try{!1===b?c.reject(this.msg):(d=!0===b?this.msg:b.call(void 0,this.msg),d===c.promise?c.reject(TypeError("Promise-chain cycle")):(e=k(d))?e.call(d,c.resolve,c.reject):c.resolve(d))}catch(f){c.reject(f)}}this.chain.length=0}function r(a){var b,c,d=this;if(!d.triggered){d.triggered=!0;d.def&&(d=d.def);try{(b=k(a))?(c=new s(d),b.call(a,function(){r.apply(c,arguments)},function(){n.apply(c,arguments)})):(d.msg=a,d.state=1,0<d.chain.length&&h(m,d))}catch(e){n.call(c||new s(d),
+e)}}}function n(a){var b=this;b.triggered||(b.triggered=!0,b.def&&(b=b.def),b.msg=a,b.state=2,0<b.chain.length&&h(m,b))}function t(a,b,c,d){for(var e=0;e<b.length;e++)(function(e){a.resolve(b[e]).then(function(b){c(e,b)},d)})(e)}function s(a){this.def=a;this.triggered=!1}function x(a){this.promise=a;this.state=0;this.triggered=!1;this.chain=[];this.msg=void 0}function l(a){if("function"!=typeof a)throw TypeError("Not a function");if(0!==this.__NPO__)throw TypeError("Not a promise");this.__NPO__=1;
+var b=new x(this);this.then=function(a,c){var f={success:"function"==typeof a?a:!0,failure:"function"==typeof c?c:!1};f.promise=new this.constructor(function(b,a){if("function"!=typeof b||"function"!=typeof a)throw TypeError("Not a function");f.resolve=b;f.reject=a});b.chain.push(f);0!==b.state&&h(m,b);return f.promise};this["catch"]=function(b){return this.then(void 0,b)};try{a.call(void 0,function(a){r.call(b,a)},function(a){n.call(b,a)})}catch(c){n.call(b,c)}}var g,q,p,u=Object.prototype.toString,
+w="undefined"!=typeof setImmediate?function(a){return setImmediate(a)}:setTimeout;try{Object.defineProperty({},"x",{}),g=function(a,b,c,d){return Object.defineProperty(a,b,{value:c,writable:!0,configurable:!1!==d})}}catch(y){g=function(a,b,c){a[b]=c;return a}}p=function(){function a(a,b){this.fn=a;this.self=b;this.next=void 0}var b,c,d;return{add:function(e,f){d=new a(e,f);c?c.next=d:b=d;c=d;d=void 0},drain:function(){var a=b;for(b=c=q=void 0;a;)a.fn.call(a.self),a=a.next}}}();var v=g({},"constructor",
+l,!1);g(l,"prototype",v,!1);g(v,"__NPO__",0,!1);g(l,"resolve",function(a){return a&&"object"==typeof a&&1===a.__NPO__?a:new this(function(b,c){if("function"!=typeof b||"function"!=typeof c)throw TypeError("Not a function");b(a)})});g(l,"reject",function(a){return new this(function(b,c){if("function"!=typeof b||"function"!=typeof c)throw TypeError("Not a function");c(a)})});g(l,"all",function(a){var b=this;return"[object Array]"!=u.call(a)?b.reject(TypeError("Not an array")):0===a.length?b.resolve([]):
+new b(function(c,d){if("function"!=typeof c||"function"!=typeof d)throw TypeError("Not a function");var e=a.length,f=Array(e),g=0;t(b,a,function(a,b){f[a]=b;++g===e&&c(f)},d)})});g(l,"race",function(a){var b=this;return"[object Array]"!=u.call(a)?b.reject(TypeError("Not an array")):new b(function(c,d){if("function"!=typeof c||"function"!=typeof d)throw TypeError("Not a function");t(b,a,function(a,b){c(b)},d)})});return l});`
+}

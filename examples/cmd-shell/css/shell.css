@@ -1,0 +1,35 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+#console {
+    margin: 4px 4px 4px 4px;
+}
+
+.prompt table {
+    width: 100%;
+    border-spacing: 0;
+}
+
+.prompt #curdir {
+    color: orange;
+    white-space: nowrap;
+    padding-right: 0.2em;
+}
+
+.prompt #command input {
+    width: 100%;
+}
+
+.prompt #command tt {
+    color: green;
+}
+
+.stderr {
+    color: red;
+}
+
+.stdout {
+    color: blue;
+}
