@@ -108,14 +108,14 @@ If you don't want to compile from original source, then download and unzip the "
 directory (you'll really want to run the examples), and then the executable appropriate to
 your OS.
 
-* [slfsrv-examples.zip](https://dl.dropboxusercontent.com/u/41075/slfrv-downloads/slfsrv-examples.zip) - (TBD) the examples you'll want
+* [slfsrv-examples.zip](https://dl.dropboxusercontent.com/u/41075/slfsrv-downloads/slfsrv-examples.zip) - the examples you'll want
 to start with for any of the following executables
 
-* [slfsrv-darwin.zip](https://dl.dropboxusercontent.com/u/41075/slfrv-downloads/slfsrv-darwin.zip) - (TBD) for Macintosh/OSX users
+* [slfsrv-darwin.zip](https://dl.dropboxusercontent.com/u/41075/slfsrv-downloads/slfsrv-darwin.zip) - for Macintosh/OSX users
 
-* [slfsrv-windows.zip](https://dl.dropboxusercontent.com/u/41075/slfrv-downloads/slfsrv-windows.zip) - (TBD) for Windows users
+* [slfsrv-windows.zip](https://dl.dropboxusercontent.com/u/41075/slfsrv-downloads/slfsrv-windows.zip) - (TBD) for Windows users
 
-* [slfsrv-linux.zip](https://dl.dropboxusercontent.com/u/41075/slfrv-downloads/slfsrv-linux.zip) - (TBD) for SUSE Linux
+* [slfsrv-linux.zip](https://dl.dropboxusercontent.com/u/41075/slfsrv-downloads/slfsrv-linux.zip) - (TBD) for SUSE Linux
 
 ------------------------------------------------------------------------------
 <a name="getting-started"></a>
