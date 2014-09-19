@@ -145,7 +145,8 @@ to start with for any of the following executables
 
 * [slfsrv-windows.zip](https://dl.dropboxusercontent.com/u/41075/slfsrv-downloads/slfsrv-windows.zip) - for Windows users
 
-* [slfsrv-linux.zip](https://dl.dropboxusercontent.com/u/41075/slfsrv-downloads/slfsrv-linux.zip) - (TBD) for SUSE Linux
+* [slfsrv-linux.zip](https://dl.dropboxusercontent.com/u/41075/slfsrv-downloads/slfsrv-linux.zip) - for Ubuntu Linux - *NOTE:
+I haven't tested this a lot, and I don't know how portable ubuntu linux portables are...*
 
 ------------------------------------------------------------------------------
 <a name="getting-started"></a>
