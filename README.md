@@ -127,12 +127,12 @@ From `#slfsrv --help`
 <a name="getting-files"></a>
 ### Getting the files
 
-### Building from source code
+#### Building from source code
 
 slfsrv source is available on [on github](https://github.com/BrentNoorda/slfsrv). It is written
 in the "Go" language. So if you're familiar with Go it's just a standard build and you got it.
 
-### Downloading pre-built executables
+#### Downloading pre-built executables
 
 If you don't want to compile from original source, then download and unzip the "examples"
 directory (you'll really want to run the examples), and then the executable appropriate to
