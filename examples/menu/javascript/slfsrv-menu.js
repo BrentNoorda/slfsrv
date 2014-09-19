@@ -24,9 +24,14 @@ function launch_app(app_name) {
 function edit_this_menu() {
     var filename, program, args;
     filename = window.location.pathname.substring(1+SLFSRV.SECRET_KEY.length+1).replace('.html','.js');
-    program = "open";
-    //var args = [program,"-a","TextEdit",filename];
-    args = [program,"-t",filename];
+    if ( SLFSRV.OS === "windows" ) {
+        program = "notepad.exe";
+        args = [program,filename];
+    } else {
+        program = "open";
+        //var args = [program,"-a","TextEdit",filename];
+        args = [program,"-t",filename];
+    }
     SLFSRV.exec({program:program,args:args}).then(function(){close_myself();});
 
     //var program = "/bin/sh";

@@ -6,6 +6,7 @@ function output(msg) { // write message on console
     html += SLFSRV.esc4html(msg).replace(/\n/g,"<br/>");
     html += '</p>';
     $('#output').append(html);
+    window.scrollTo(0,document.body.scrollHeight);
 }
 
 function error(msg) {

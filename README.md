@@ -11,6 +11,7 @@ executable, to create basic computer applications.
 Jump To:
 
 * [primary features](#primary-features)
+* [why was this made and what situations is it good for?](#who-for)
 * [usage, helpscreen version](#usage-helpscreen)
 * [javascript api](#jsapi)
 * [getting the files](#getting-files)
@@ -38,7 +39,36 @@ and vice versa).
 no longer must I launch a browser to run certain kinds of tasks, and some local start shell
 to run local tasks, when now they can all launch from the browser).
 
-<h1 style="color:red">...more documentation coming soon...</h1>
+------------------------------------------------------------------------------
+<a name="who-for"></a>
+# Why was this made and what situations is it good for?
+
+Putting a GUI front on a little program is too often more work than its worth, especially
+if that isn't a "massive, commercial, sellable" program. Sure, if you're making a commercial product
+to sell to millions, you want a fancy user interface; but if it's just an one-off tool
+for weekly departmental TPS reports, then it's good enough to have the kind of simple
+tools a web browser-like front-end makes simple.
+
+slfsrv is a general-purpose localhost app maker, and as such it could be used to make quote
+sophisticated tools. For example, it could wrap around git to make a nice GUI UI (if there
+weren't already so many of them). But I expect it more often to be used for situations
+like these:
+
+* you need a front end to an existing command-line tool (e.g. collect information, run
+the command-line tool, the nicely format the output in the browser window)
+
+* you want to create an application to run on user's computers, but don't want to spend
+a lot of time making it
+
+* for organizing your daily tasks, combining web activities and local-program activites
+in the same menu UI (see the menu example)
+
+* you want a first-order prototype of a new product idea
+
+* Creation and wrapping of installation tools and procedures. Suppose you need to install a new executable
+on everyones system. You can embed that other executable and other scripts within a slfsrv executable, put a bunch of
+checks on inputs in front of that with slfsrv, and the result would be a quick and slick and better
+installation tool.
 
 ------------------------------------------------------------------------------
 <a name="usage-helpscreen"></a>
@@ -113,7 +143,7 @@ to start with for any of the following executables
 
 * [slfsrv-darwin.zip](https://dl.dropboxusercontent.com/u/41075/slfsrv-downloads/slfsrv-darwin.zip) - for Macintosh/OSX users
 
-* [slfsrv-windows.zip](https://dl.dropboxusercontent.com/u/41075/slfsrv-downloads/slfsrv-windows.zip) - (TBD) for Windows users
+* [slfsrv-windows.zip](https://dl.dropboxusercontent.com/u/41075/slfsrv-downloads/slfsrv-windows.zip) - for Windows users
 
 * [slfsrv-linux.zip](https://dl.dropboxusercontent.com/u/41075/slfsrv-downloads/slfsrv-linux.zip) - (TBD) for SUSE Linux
 
@@ -126,6 +156,14 @@ When you have the executable and examples, then from the examples directory run
     slfsrv -verbose EXAMPLES.html
 
 This should launch a browser that will automatically step through some of the examples.
+
+*NOTE: Unfortunately, the "menu" example was taken directly from my personal computer, and so many
+of the items won't work on other computers that aren't set up like mine (don't have the same
+programs installed as I do). I'll get around to clean this up, but left it here just because I
+think it's a great example of showing how a browser interface can simultaneously interface with the
+web, or with the local computer, it really makes no difference. I especially like the "Don't
+look too often" section which keeps track of how often you look at time-waster web sites and
+so keeps you from looking too often.*
 
 ------------------------------------------------------------------------------
 <a name="todo"></a>

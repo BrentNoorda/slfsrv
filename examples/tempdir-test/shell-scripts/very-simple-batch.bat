@@ -1,1 +1,1 @@
-echo "if you see this, then tempdir worked"
+@echo if you see this, then tempdir worked

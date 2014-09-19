@@ -1,11 +1,12 @@
 /*jslint white:false plusplus:false browser:true nomen:false */
-/*globals $, SLFSRV, Promise*/
+/*globals $, SLFSRV, Promise, window*/
 
 function output(msg) { // write message on console
     var html = '<span>';//'<p>';
     html += SLFSRV.esc4html(msg).replace(/\t/g,"&nbsp;&nbsp;&nbsp;&nbsp;").replace(/\n/g,"<br/>");
     html += '</span>';//'</p>';
     $('#output').append(html);
+    window.scrollTo(0,document.body.scrollHeight);
 }
 
 function error(msg) {

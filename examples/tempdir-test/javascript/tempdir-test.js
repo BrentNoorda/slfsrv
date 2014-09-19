@@ -175,7 +175,7 @@ function test() {
 
                 // execute the os-appropriate shell script
                 var program, args;
-                if ( SLFSRV.os === "windows" ) {
+                if ( SLFSRV.OS === "windows" ) {
                     program = "cmd.exe";
                     args = [ program, "/c", dir + "\\very-simple-batch.bat" ];
                 } else {

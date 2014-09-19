@@ -1,5 +1,5 @@
 /*jslint white:false plusplus:false browser:true nomen:false */
-/*globals pageTitle, addMenuCategory, menuOption, launch_app, SLFSRV_MENU_GLOBALS, window*/
+/*globals pageTitle, addMenuCategory, menuOption, launch_app, SLFSRV, SLFSRV_MENU_GLOBALS, window*/
 /*globals set_visible_if_not_already_running*/
 /*globals set_visible_if_not_selected_today, set_visible_if_not_selected_recently, record_menu_time*/
 /*globals shell_command*/
@@ -128,18 +128,35 @@ addMenuCategory( "Don't look too often", null, [
 addMenuCategory( "Daily Utils", null, [
     menuOption({
         title: "Terminal",
-        action: function(){ launch_app('Terminal.app'); },
+        action: function(){
+            if ( SLFSRV.OS === "windows" ) {
+                SLFSRV.exec({program:'cmd.exe',args:["cmd.exe","/c","start","cmd.exe"]});
+            } else {
+                launch_app('Terminal.app');
+            }
+        },
         img: "icons/Terminal.png"
     }),
     menuOption({
         title: "Contacts",
         action: function(){ launch_app('Contacts.app'); },
         img: "icons/Contacts.png",
-        description: "names & addresses"
+        description: "names & addresses",
+        visibleTest: function(setVisible) {
+            if (SLFSRV.OS === "darwin") {
+                setVisible();
+            }
+        }
     }),
     menuOption({
         title: "Notes",
-        action: function(){ launch_app('Notes.app'); },
+        action: function(){
+            if ( SLFSRV.OS === "windows" ) {
+                SLFSRV.exec({program:'notepad.exe',args:["notepad.exe"]});
+            } else {
+                launch_app('Notes.app');
+            }
+        },
         img: "icons/Notes.png",
         description: "quick post-its"
     })

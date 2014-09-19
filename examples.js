@@ -122,16 +122,23 @@ function showHtmlSource(idx) {
     program = SLFSRV.SELF;
     args = [ program, "-verbose",
              SLFSRV.ROOTPATH + SLFSRV.dir.SLASH + "examples",
-             "showsourceinhtml/index.html?" + src.name + "--" + files.join(',') ];
+             "showsourceinhtml/index.html?" + src.name.replace(/ /g,'%20') + "--" + files.join(',') ];
     SLFSRV.exec({program:program,args:args});
 }
 
 function showEditorSource(idx) {
-    var i, src, filepath;
+    var i, src, filepath, program, args;
     src = gSources[idx];
     for ( i = 0; i < src.src.length; i++ ) {
         filepath = SLFSRV.ROOTPATH + ("/examples/" + src.src[i]).replace(/\//g,SLFSRV.dir.SLASH);
-        SLFSRV.exec({program:'open',args:['open','-t',filepath]});
+        if ( SLFSRV.OS==="windows" ) {
+            program = 'notepad.exe';
+            args = [program,filepath];
+        } else {
+            program = 'open';
+            args = [program,'-t',filepath];
+        }
+        SLFSRV.exec({program:program,args:args});
     }
 
 }
