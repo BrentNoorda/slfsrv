@@ -21,7 +21,7 @@ Jump To:
 
 ------------------------------------------------------------------------------
 <a name="primary-features"></a>
-# Primary features:
+### Primary features:
 
 * Run as server to deliver local HTML/CSS/JS in a local browser, as a localhost app.
 
@@ -41,7 +41,7 @@ to run local tasks, when now they can all launch from the browser).
 
 ------------------------------------------------------------------------------
 <a name="who-for"></a>
-# Why was this made and what situations is it good for?
+### Why was this made and what situations is it good for?
 
 Putting a GUI front on a little program is too often more work than its worth, especially
 if that isn't a "massive, commercial, sellable" program. Sure, if you're making a commercial product
@@ -72,7 +72,7 @@ installation tool.
 
 ------------------------------------------------------------------------------
 <a name="usage-helpscreen"></a>
-# Usage, helpscreen version:
+### Usage, helpscreen version:
 
 From `#slfsrv --help`
 
@@ -119,13 +119,13 @@ From `#slfsrv --help`
 
 ------------------------------------------------------------------------------
 <a name="jsapi"></a>
-# JavaScript API:
+### JavaScript API:
 
 [&#x25BA; Javascript API](docs/JSAPI.md) - calls made available to javascript running in the browser
 
 ------------------------------------------------------------------------------
 <a name="getting-files"></a>
-# Getting the files
+### Getting the files
 
 ### Building from source code
 
@@ -150,7 +150,7 @@ I haven't tested this a lot, and I don't know how portable ubuntu linux portable
 
 ------------------------------------------------------------------------------
 <a name="getting-started"></a>
-# Getting started with demos
+### Getting started with demos
 
 When you have the executable and examples, then from the examples directory run
 
@@ -168,7 +168,7 @@ so keeps you from looking too often.*
 
 ------------------------------------------------------------------------------
 <a name="todo"></a>
-# ISSUES / TODO / TOANSWER
+### ISSUES / TODO / TOANSWER
 
 [&#x25BA; TODO](docs/TODO.md) - what's still to be done
 
@@ -182,13 +182,13 @@ in the Finder, or by using the "open..." command in Terminal, follow these instr
 
 ------------------------------------------------------------------------------
 <a name="contact"></a>
-# Who to contact
+### Who to contact
 
 [&#x25BA; Brent Noorda](http://www.brent-noorda.com/) - all about the author and how to contact
 
 ------------------------------------------------------------------------------
 <a name="home"></a>
-# Project Homepage
+### Project Homepage
 
 [&#x25BA; slfsrv project homepage](https://github.com/BrentNoorda/slfsrv) - slfsrv project on github
 
