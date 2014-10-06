@@ -14,7 +14,7 @@ Jump To:
 * [why was this made and what situations is it good for?](#who-for)
 * [usage, helpscreen version](#usage-helpscreen)
 * [javascript api](#jsapi)
-* [getting the files](#getting-files)
+* [getting the source/executable files](#getting-files)
 * [getting started with demos](#getting-started)
 * [who to contact](#todo)
 * [project homepage](#home)
@@ -125,12 +125,7 @@ From `#slfsrv --help`
 
 ------------------------------------------------------------------------------
 <a name="getting-files"></a>
-### Getting the files
-
-#### Building from source code
-
-slfsrv source is available on [on github](https://github.com/BrentNoorda/slfsrv). It is written
-in the "Go" language. So if you're familiar with Go it's just a standard build and you got it.
+### Getting the source/executable files
 
 #### Downloading pre-built executables
 
@@ -148,15 +143,60 @@ to start with for any of the following executables
 * [slfsrv-linux.zip](https://dl.dropboxusercontent.com/u/41075/slfsrv-downloads/slfsrv-linux.zip) - for Ubuntu Linux - *NOTE:
 I haven't tested this a lot, and I don't know how portable ubuntu linux portables are...*
 
+#### Building from source code
+
+##### Building on OSX or Linux
+
+`slfsrv` source is available at [github.com/BrentNoorda/slfsrv](https://github.com/BrentNoorda/slfsrv). It is written
+in the "Go" language. If you don't already have Go installed, then follow these [Go Installation Instructions](http://golang.org/doc/install).
+
+If you're familiar with Go then you already know how you like to install and build new Go applications. If you are not familiar with Go,
+then you may want to build `slfsrv` in it's own directory, which for this example will be `~/slfsrv`, with these commands:
+
+    $ mkdir ~/slfsrv
+    $ cd ~/slfsrv
+    $ export GOPATH=~/slfsrv
+    $ go get github.com/BrentNoorda/slfsrv
+    $ go install github.com/BrentNoorda/slfsrv
+
+If those commands to download and build worked then the `slfsrv` executable will have been created in the `~/slfsrv/bin`
+directory, and this command:
+
+    $ ~/slfsrv/bin/slfsrv --help
+
+will output the help screen seen [here](https://github.com/BrentNoorda/slfsrv#usage-helpscreen).
+
+##### Building on Windows
+
+`slfsrv` source is available at [github.com/BrentNoorda/slfsrv](https://github.com/BrentNoorda/slfsrv). It is written
+in the "Go" language. If you don't already have Go installed, then follow these [Go Installation Instructions](http://golang.org/doc/install).
+
+If you're familiar with Go then you already know how you like to install and build new Go applications. If you are not familiar with Go,
+then you may want to build `slfsrv` in it's own directory, which for this example will be `\slfsrv`, with these commands:
+
+    $ mkdir \slfsrv
+    $ cd \slfsrv
+    $ set GOPATH=\slfsrv
+    $ go get github.com/BrentNoorda/slfsrv
+    $ go install github.com/BrentNoorda/slfsrv
+
+If those commands to download and build worked then the `slfsrv` executable will have been created in the `\slfsrv\bin`
+directory, and this command:
+
+    $ \slfsrv\bin\slfsrv --help
+
+will output the help screen seen [here](https://github.com/BrentNoorda/slfsrv#usage-helpscreen).
+
 ------------------------------------------------------------------------------
 <a name="getting-started"></a>
 ### Getting started with demos
 
-When you have the executable and examples, then from the examples directory run
+When you have the executable and examples (and assuming the `slfsrv` executable is in your path),
+then from the `src/github.com/BrentNoorda/slfsrv` directory run:
 
-    slfsrv -verbose EXAMPLES.html
+    $ slfsrv -verbose EXAMPLES.html
 
-This should launch a browser that will automatically step through some of the examples.
+This should launch a browser that will allow you to execute some basic examples, along with viewing their source code.
 
 *NOTE: Unfortunately, the "menu" example was taken directly from my personal computer, and so many
 of the items won't work on other computers that aren't set up like mine (don't have the same
@@ -190,5 +230,5 @@ in the Finder, or by using the "open..." command in Terminal, follow these instr
 <a name="home"></a>
 ### Project Homepage
 
-[&#x25BA; slfsrv project homepage](https://github.com/BrentNoorda/slfsrv) - slfsrv project on github
+[&#x25BA; github.com/BrentNoorda/slfsrv](https://github.com/BrentNoorda/slfsrv) - slfsrv project homepage
 
