@@ -143,7 +143,7 @@ addMenuCategory( "Problems Solving Problems", "http://www.problemssolvingproblem
     })
 ] );
 
-addMenuCategory( "etc...", null, [
+addMenuCategory( "etc...", [
     menuOption({
         html: '<a href="main_menu.html">MAIN MENU</a>',
         img: "http://keepass.info/help/images/b16x16_kfm_home.png"

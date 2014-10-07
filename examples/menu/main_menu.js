@@ -8,7 +8,7 @@ SLFSRV_MENU_GLOBALS.columnCount = 3;
 
 pageTitle("Main Menu (slfsrv-menu demo)");
 
-addMenuCategory( "Common", null, [
+addMenuCategory( "Common", [
     menuOption({
         title: "GMail",
         action: "http://gmail.com/",
@@ -25,16 +25,12 @@ addMenuCategory( "Common", null, [
     }),
     menuOption({
         title: "Workflowy",
-        action: function(){
-            record_menu_time('Workflowy',function(){
-                location.href = "https://workflowy.com/";
-            });
-        },
+        action: "https://workflowy.com/",
         img: "https://workflowy.com/media/i/favicon.ico"
     })
 ] );
 
-addMenuCategory( "Don't look too often", null, [
+addMenuCategory( "Don't look too often", [
     menuOption({
         title: "GCalendar",
         action: function(){
@@ -111,21 +107,10 @@ addMenuCategory( "Don't look too often", null, [
         img: "http://twitter.com/favicon.ico",
         description: "4+ hours",
         visibleTest: function(setVisible) { set_visible_if_not_selected_recently('Twitter',4*60,setVisible); }
-    }),
-    menuOption({
-        title: "Workflowy",
-        action: function(){
-            record_menu_time('Workflowy',function(){
-                location.href = "https://workflowy.com/";
-            });
-        },
-        img: "https://workflowy.com/media/i/favicon.ico",
-        description: "3+ hours",
-        visibleTest: function(setVisible) { set_visible_if_not_selected_recently('Workflowy',3*60,setVisible); }
     })
 ] );
 
-addMenuCategory( "Daily Utils", null, [
+addMenuCategory( "Daily Utils", [
     menuOption({
         title: "Terminal",
         action: function(){
@@ -139,7 +124,7 @@ addMenuCategory( "Daily Utils", null, [
     }),
     menuOption({
         title: "Contacts",
-        action: function(){ launch_app('Contacts.app'); },
+        action: function(){ launch_app('/Applications/Contacts.app'); },
         img: "icons/Contacts.png",
         description: "names & addresses",
         visibleTest: function(setVisible) {
@@ -370,7 +355,7 @@ addMenuCategory( "Images", "https://cdn3.iconfinder.com/data/icons/mini-glyph/48
     })
 ] );
 
-addMenuCategory( "etc...", null, [
+addMenuCategory( "etc...", [
     menuOption({
         title: "...another menu",
         action: "secondary_menu.html",

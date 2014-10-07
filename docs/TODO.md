@@ -14,18 +14,14 @@ it is too much a copy of my own, and doesn't have good windows examples
 
 SLFSRV.exit() ?
 
-### make the executable downloads available somewhere
-
-for osx/darwin, windows, and linux
-
-### figure out golang packages layout
+### improve golang packages layout
 
 some of the ways to to import from subdirectories of github.com/BrentNoorda/slfsrv seem
 silly, and would screw up anyone wanting to fork this. Am I doing it wrong?
 
 ### don't shut down while goroutines are still running
 
-go probably has a way to add an array waiting for the number of things that must shut down
+go probably has a convenient and efficitent way to add wait for a bunch of goroutines to be finished?
 
 ### catch ctrl-c shutdown
 

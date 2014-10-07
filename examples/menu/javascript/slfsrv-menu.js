@@ -24,6 +24,7 @@ function launch_app(app_name) {
 function edit_this_menu() {
     var filename, program, args;
     filename = window.location.pathname.substring(1+SLFSRV.SECRET_KEY.length+1).replace('.html','.js');
+    filename = SLFSRV.ROOTPATH + SLFSRV.dir.SLASH + filename;
     if ( SLFSRV.OS === "windows" ) {
         program = "notepad.exe";
         args = [program,filename];
@@ -171,7 +172,7 @@ function pageTitle(title) {
     document.getElementById("put-menus-here").appendChild( el.createElement() );
 }
 
-function menuOption(opt/*{ required properties:title  optional properties:action,html,img,description,visibleTest}*/) {
+function menuOption(opt/*{ optional properties:title,action,html,img,description,visibleTest}*/) {
     // return undefined if conditional says not to display this action
     var els, list, actnTag;
     els = [];
@@ -244,8 +245,13 @@ function menuOption(opt/*{ required properties:title  optional properties:action
     return list;
 }
 
-function addMenuCategory(title,img,elements) {
+function addMenuCategory(title,optionalImg,elements) {
     var attrs, mc, parentDiv, addNewline = false, parentElem;
+
+    if ( elements === undefined ) {
+        elements = optionalImg;
+        optionalImg = null;
+    }
 
     parentElem = document.getElementById("put-menus-here");
     attrs = { cssVerticalAlign:'top', cssMarginRight_em:2, cssWidth_em:17,
@@ -273,7 +279,7 @@ function addMenuCategory(title,img,elements) {
                                );
                         }
                    } },
-                   img ? categoryImg({src:img}) : undefined,
+                   optionalImg ? categoryImg({src:optionalImg}) : undefined,
                    SLFSRV.esc4html(title) ),
                ul( elements )
           );

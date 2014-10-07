@@ -1,6 +1,10 @@
 #JAVASCRIPT API
 
-All of these methods are available to your javascript files (assuming that `<script src="slfsrv-core.js" type="text/javascript"></script>` is in the `<head>` of your primary HTML file).
+All of these methods are available to your javascript files, assuming that the virtual file
+`slfsrv-core.js` is included in your primary HTML file; e.g. with
+this line is in the `<head>` section:
+
+    <script src="slfsrv-core.js" type="text/javascript"></script>
 
 [&#x25C0; back to README.cmd](../README.md)
 
@@ -170,7 +174,7 @@ then return to the original directory.
     //             program = "ls";
     //             args = [ program, "-l" ];
     //         }
-
+    //
     //         SLFSRV.exec({program:program,args:args},onsuccess,onerror);
     //     });
 

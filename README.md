@@ -4,9 +4,9 @@ slfsrv
 ### Create simple, cross-platform GUI applications, or wrap GUIs around command-line applications, using HTML/JS/CSS and your own browser.
 
 __slfsrv__ is an executable that lets you create GUI applications (using simple HTML, CSS, and
-Javascript) that launch the web browsers as the logic system and graphical front end. A Javascript API is
+Javascript) that launch the default web browser as both the logic system and graphical front end. A Javascript API is
 available to those application to provide enough access to the local computer system, files, and
-executable, to create basic computer applications.
+executable, to create basic computer applications or to wrap less-friendly applications within a browser front end.
 
 Jump To:
 
@@ -17,6 +17,7 @@ Jump To:
 * [getting the source/executable files](#getting-files)
 * [getting started with demos](#getting-started)
 * [who to contact](#todo)
+* [history](#history)
 * [project homepage](#home)
 
 ------------------------------------------------------------------------------
@@ -32,7 +33,7 @@ ability to execute other programs.
 * Run the same applications from within Windows, Mac/OSX, and Linux.
 
 * Bundle applications into either single-file "slfsrv" files, or compile into
-standalone executables. (Note, a Mac user can create a standalone Windows executable,
+standalone executables. (Note, a Mac user can create a standalone Windows or Linux executable,
 and vice versa).
 
 * Blur the lines between what runs on the web, and what runs on the local machine. (i.e.
@@ -47,28 +48,33 @@ Putting a GUI front on a little program is too often more work than its worth, e
 if that isn't a "massive, commercial, sellable" program. Sure, if you're making a commercial product
 to sell to millions, you want a fancy user interface; but if it's just an one-off tool
 for weekly departmental TPS reports, then it's good enough to have the kind of simple
-tools a web browser-like front-end makes simple.
+GUI a web browser front-end makes easy.
 
-slfsrv is a general-purpose localhost app maker, and as such it could be used to make quote
-sophisticated tools. For example, it could wrap around git to make a nice GUI UI (if there
+slfsrv is a general-purpose localhost app maker, and as such it could be used to make
+"sophisticated tools". For example, it could wrap around git to make a nice GUI UI (if there
 weren't already so many of them). But I expect it more often to be used for situations
 like these:
 
 * you need a front end to an existing command-line tool (e.g. collect information, run
 the command-line tool, the nicely format the output in the browser window)
 
-* you want to create an application to run on user's computers, but don't want to spend
+* you want to create an application to run on your user's computers, but don't want to spend
 a lot of time making it
 
-* for organizing your daily tasks, combining web activities and local-program activites
-in the same menu UI (see the menu example)
+* for creating your one all-powerful home screen, organizing your daily tasks by combining web activities and local-program activites
+in the same menu UI (see the menu example under [getting started with demos](#getting-started))
 
 * you want a first-order prototype of a new product idea
 
-* Creation and wrapping of installation tools and procedures. Suppose you need to install a new executable
-on everyones system. You can embed that other executable and other scripts within a slfsrv executable, put a bunch of
+* Creation and wrapping of installation tools. Suppose you need to install a new executable
+on everyone's system. You can embed that other executable and other scripts within a slfsrv executable, put a bunch of
 checks on inputs in front of that with slfsrv, and the result would be a quick and slick and better
 installation tool.
+
+* Help people through your organization's procedures. Instead of publishing a list of steps people
+must perform (e.g. "step 1, map to drive with this command and your name and password") you can create a GUI
+front end around those, write out command in the background, embedding something like [Expect](http://en.wikipedia.org/wiki/Expect) if they're
+complicated, and walk users through the procedures in a much friendlier manor).
 
 ------------------------------------------------------------------------------
 <a name="usage-helpscreen"></a>
@@ -145,13 +151,16 @@ I haven't tested this a lot, and I don't know how portable ubuntu linux portable
 
 #### Building from source code
 
-##### Building on OSX or Linux
-
 `slfsrv` source is available at [github.com/BrentNoorda/slfsrv](https://github.com/BrentNoorda/slfsrv). It is written
 in the "Go" language. If you don't already have Go installed, then follow these [Go Installation Instructions](http://golang.org/doc/install).
 
-If you're familiar with Go then you already know how you like to install and build new Go applications. If you are not familiar with Go,
-then you may want to build `slfsrv` in it's own directory, which for this example will be `~/slfsrv`, with these commands:
+If you're familiar with Go then you already know how you like to install and build new Go applications, and so
+you'll ignore the following OSX, Linux, or Windows instructions. If you are not familiar with Go,
+then you may want to build `slfsrv` in it's own directory.
+
+##### Building on OSX or Linux
+
+To build in the `~/slfsrv` directory:
 
     $ mkdir ~/slfsrv
     $ cd ~/slfsrv
@@ -168,11 +177,7 @@ will output the help screen seen [here](https://github.com/BrentNoorda/slfsrv#us
 
 ##### Building on Windows
 
-`slfsrv` source is available at [github.com/BrentNoorda/slfsrv](https://github.com/BrentNoorda/slfsrv). It is written
-in the "Go" language. If you don't already have Go installed, then follow these [Go Installation Instructions](http://golang.org/doc/install).
-
-If you're familiar with Go then you already know how you like to install and build new Go applications. If you are not familiar with Go,
-then you may want to build `slfsrv` in it's own directory, which for this example will be `\slfsrv`, with these commands:
+To build in the `\slfsrv` directory:
 
     $ mkdir \slfsrv
     $ cd \slfsrv
@@ -198,13 +203,8 @@ then from the `src/github.com/BrentNoorda/slfsrv` directory run:
 
 This should launch a browser that will allow you to execute some basic examples, along with viewing their source code.
 
-*NOTE: Unfortunately, the "menu" example was taken directly from my personal computer, and so many
-of the items won't work on other computers that aren't set up like mine (don't have the same
-programs installed as I do). I'll get around to clean this up, but left it here just because I
-think it's a great example of showing how a browser interface can simultaneously interface with the
-web, or with the local computer, it really makes no difference. I especially like the "Don't
-look too often" section which keeps track of how often you look at time-waster web sites and
-so keeps you from looking too often.*
+My favorite example is "menu", which I now use (instead of my macintosh DOC) to launch just about everything, using the additional
+`slfsrv-menu.js` script (documented [here](docs/SLFSRV-MENU.md)).
 
 ------------------------------------------------------------------------------
 <a name="todo"></a>
@@ -219,6 +219,12 @@ random info to be better documented later:
 For mac, to associate .slfsrv with an app so you can execute the bundle simply by double-clicking it
 in the Finder, or by using the "open..." command in Terminal, follow these instructions for
 [How to associate a file name extension with a darwin /linux/unix command-line executable on osx/macintosh](http://unlessimwrong.blogspot.com/2014/07/how-to-associate-file-name-extension.html)
+
+------------------------------------------------------------------------------
+<a name="history"></a>
+### History
+
+* 2014/10/07 - version 0.0.1 - first release
 
 ------------------------------------------------------------------------------
 <a name="contact"></a>
