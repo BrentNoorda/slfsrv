@@ -211,7 +211,7 @@ addMenuCategory( "News", "https://ssl.gstatic.com/news-static/img/favicon.ico", 
     })
 ] );
 
-addMenuCategory( "Nerdy", "http://www.icon100.com/up/3926/128/45-Nerd-happy-smiling-face-in-rounded-square-face.png", [
+addMenuCategory( "Nerdy", "http://solitarynerd.files.wordpress.com/2014/05/solitary-nerd-family-emoticon.png?w=644", [
     menuOption({
         title: "Hacker News",
         action: function(){
