@@ -13,6 +13,7 @@ import(
     "archive/zip"
     "path/filepath"
     "bitbucket.org/kardianos/osext"
+    "github.com/BrentNoorda/slfsrv/config"
     "github.com/BrentNoorda/slfsrv/ssutil"
     "github.com/BrentNoorda/slfsrv/bundle"
     "github.com/BrentNoorda/slfsrv/browser"
@@ -136,6 +137,8 @@ func main() {
     var zipReader *zip.Reader
 
     rand.Seed(time.Now().Unix())
+
+    config.ParseConfigFile() // rjb
 
     var myselfExecutable string
     myselfExecutable, err = osext.Executable()

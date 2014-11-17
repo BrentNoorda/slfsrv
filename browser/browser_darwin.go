@@ -8,7 +8,9 @@ import (
 )
 
 func LaunchDefaultBrowser(port int,secretKey string,initPathUrl string,initQuery string,verbose bool) {
-    var runSpec string = "http://127.0.0.1:" + strconv.Itoa(port) + "/" + secretKey + "/" + initPathUrl
+    // rjb var runSpec string = "http://127.0.0.1:" + strconv.Itoa(port) + "/" + secretKey + "/" + initPathUrl
+
+    var runSpec string = "http://127.0.0.1:" + strconv.Itoa(port) + "/" + initPathUrl
     if initQuery != "" {
         runSpec += "?" + initQuery
     }
