@@ -248,7 +248,7 @@ addMenuCategory( "Nerdy", "http://solitarynerd.files.wordpress.com/2014/05/solit
     })
 ] );
 
-addMenuCategory( "Search", "http://tpit.com.au/wp-content/uploads/2014/01/search.png", [
+addMenuCategory( "Search", "icons/websearch.png", [
     menuOption({
         title: "Google",
         action: "https://google.com/",

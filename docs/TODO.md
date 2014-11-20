@@ -60,7 +60,7 @@ SLFSRV.write() and in unbundling files (made from -bundle and -compile options).
 
 Is GO the right tool? Maybe a minimal C web server?
 
-compare with node-webkit?
+compare with [node-webkit](https://github.com/rogerwang/node-webkit) or [atom-shell](https://github.com/atom/atom-shell)?
 
 compare with https://github.com/chriskiehl/Gooey
 

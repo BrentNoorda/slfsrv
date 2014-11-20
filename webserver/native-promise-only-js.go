@@ -1,14 +1,14 @@
 // proving Promises if not native to the browser (polyfill if no native Promises)
 // source from https://github.com/getify/native-promise-only
 /*! Native Promise Only
-    v0.7.6-a (c) Kyle Simpson
-    MIT License: http://getify.mit-license.org
+  v0.7.6-a (c) Kyle Simpson
+  MIT License: http://getify.mit-license.org
 */
 
 package webserver
 
 func native_promise_only_jsselfServingJsSrc() string {
-    return `//https://github.com/getify/native-promise-only
+	return `//https://github.com/getify/native-promise-only
 (function(h,k,m){k[h]=k[h]||m();"undefined"!=typeof module&&module.exports?module.exports=k[h]:"function"==typeof define&&define.amd&&define(function(){return k[h]})})("Promise","undefined"!=typeof global?global:this,function(){function h(a,b){p.add(a,b);q||(q=w(p.drain))}function k(a){var b,c=typeof a;null==a||"object"!=c&&"function"!=c||(b=a.then);return"function"==typeof b?b:!1}function m(){for(var a=0;a<this.chain.length;a++){var b=1===this.state?this.chain[a].success:this.chain[a].failure,c=
 this.chain[a],d=void 0,e=void 0;try{!1===b?c.reject(this.msg):(d=!0===b?this.msg:b.call(void 0,this.msg),d===c.promise?c.reject(TypeError("Promise-chain cycle")):(e=k(d))?e.call(d,c.resolve,c.reject):c.resolve(d))}catch(f){c.reject(f)}}this.chain.length=0}function r(a){var b,c,d=this;if(!d.triggered){d.triggered=!0;d.def&&(d=d.def);try{(b=k(a))?(c=new s(d),b.call(a,function(){r.apply(c,arguments)},function(){n.apply(c,arguments)})):(d.msg=a,d.state=1,0<d.chain.length&&h(m,d))}catch(e){n.call(c||new s(d),
 e)}}}function n(a){var b=this;b.triggered||(b.triggered=!0,b.def&&(b=b.def),b.msg=a,b.state=2,0<b.chain.length&&h(m,b))}function t(a,b,c,d){for(var e=0;e<b.length;e++)(function(e){a.resolve(b[e]).then(function(b){c(e,b)},d)})(e)}function s(a){this.def=a;this.triggered=!1}function x(a){this.promise=a;this.state=0;this.triggered=!1;this.chain=[];this.msg=void 0}function l(a){if("function"!=typeof a)throw TypeError("Not a function");if(0!==this.__NPO__)throw TypeError("Not a promise");this.__NPO__=1;

@@ -1,7 +1,7 @@
 package webserver
 
 func selfServingJsSrc() string {
-    return `
+	return `
 
 
 // http://javascript.nwbox.com/asyncAlert/
@@ -20,7 +20,7 @@ var SLFSRV = {
 (function () {
     'use strict';
 
-    var sendRequest, XMLHttpFactories, createXMLHTTPObject, alertStack;
+    var sendRequest, XMLHttpFactories, createXMLHTTPObject, alertStack, serverLostAlert = null;
 
     function log(msg) {
         try {
@@ -344,6 +344,13 @@ var SLFSRV = {
         sendRequest("/call/" + SLFSRV.SECRET_KEY + "/" + funcName + "/" + timeout,handleRequest,jsonArgs);
     };
 
+    function keep_alive_lost() {
+        if ( !serverLostAlert ) {
+            serverLostAlert = SLFSRV.alert("Connection with SLFSRV server has been lost.",function(){
+                serverLostAlert = null;
+            });
+        }
+    }
 
     /* the following minimal XMLHttpRequest is taken from http://www.quirksmode.org/js/xmlhttp.html */
     sendRequest = function(url,callback,postData) {
@@ -359,13 +366,20 @@ var SLFSRV = {
         }
         req.onreadystatechange = function () {
             if (req.readyState !== 4) { return; }
+
             if (req.status !== 200 && req.status !== 304) {
                 if ( -1 !== url.indexOf("/keepalive/") ) {
+                    keep_alive_lost();
                     return;
                 }
                 req = {responseText:JSON.stringify({message:"Unspecified error " + req.status + " on call to " + url})};
                 // alert('HTTP error ' + req.status);
                 //return;
+            } else if ( serverLostAlert ) {
+                if ( -1 !== url.indexOf("/keepalive/") ) {
+                    SLFSRV.alertClose(serverLostAlert);
+                    serverLostAlert = null;
+                }
             }
             callback(req);
         };
@@ -396,7 +410,6 @@ var SLFSRV = {
     };
 
     function keep_alive_server_forever() {
-
         SLFSRV.callServer("keepalive",{animal:"dog",favoriteNumber:42},function(result) {
             log("result.message = " + result.message);
         });
