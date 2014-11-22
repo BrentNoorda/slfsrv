@@ -277,16 +277,16 @@ func (fr *fileRemoveIn) goServe(lc *longCall, wsData *webserverData) {
 }
 
 type dirMakeIn struct {
-    Dir string
+	Dir string
 }
 
-func (fr *dirMakeIn) goServe(lc *longCall,wsData *webserverData) {
-		err := os.MkdirAll(fr.Dir, 0777)
-		if err != nil {
-				lc.Response <- jsonResponseError("error: " + err.Error())
-		} else {
-				lc.Response <- jsonResponse{"state":"done"}
-		}
+func (fr *dirMakeIn) goServe(lc *longCall, wsData *webserverData) {
+	err := os.MkdirAll(fr.Dir, 0777)
+	if err != nil {
+		lc.Response <- jsonResponseError("error: " + err.Error())
+	} else {
+		lc.Response <- jsonResponse{"state": "done"}
+	}
 }
 
 ////////////////// store //////////////////
@@ -607,9 +607,9 @@ func clientCallHandler(functionName string, timeout int, body io.ReadCloser, wsD
 			var tempdir tempdirIn
 			in = &tempdir
 
-        case "dir.make":
-            var dirMake dirMakeIn
-            in = &dirMake
+		case "dir.make":
+			var dirMake dirMakeIn
+			in = &dirMake
 
 		default:
 			err = errors.New("Unknown function name: " + functionName)
