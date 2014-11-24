@@ -187,11 +187,22 @@ func web_server_forever(secretKey string, wsData *webserverData,
 				return
 			}
 			defer file.Close()
+
+			fileTime := time.Time{}
+
+			rangeStr := r.Header.Get("Range")
+			if rangeStr == "" {
+				fileStat, err := os.Stat(filepathFromSlash)
+				if err == nil {
+					fileTime = fileStat.ModTime()
+				}
+			}
+
 			_, filenameOnly := path.Split(filepathFromSlash)
 			if wsData.verbose {
 				fmt.Printf("    Return file %s\n", filepath.FromSlash(path.Join(rootPath, urlPath)))
 			}
-			http.ServeContent(w, r, filenameOnly, time.Time{}, file)
+			http.ServeContent(w, r, filenameOnly, fileTime, file)
 		}
 	}
 
