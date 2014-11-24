@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/BrentNoorda/slfsrv/bundle"
 	"github.com/BrentNoorda/slfsrv/ssutil"
-	"io/ioutil"
 	"math/rand"
 	"net"
 	"net/http"
@@ -180,17 +179,30 @@ func web_server_forever(secretKey string, wsData *webserverData,
 				fullFilename = path.Join(wsData.fullRootPath, urlPath)
 			}
 
-			body, err := ioutil.ReadFile(filepath.FromSlash(fullFilename))
+			filepathFromSlash := filepath.FromSlash(fullFilename)
+			file, err := os.Open(filepathFromSlash)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "    Unable to read file %s\n", filepath.FromSlash(path.Join(rootPath, urlPath)))
 				errorHandler(w, r, http.StatusNotFound)
 				return
-			} else {
-				if wsData.verbose {
-					fmt.Printf("    Return file %s\n", filepath.FromSlash(path.Join(rootPath, urlPath)))
-				}
-				fmt.Fprintf(w, "%s", body)
 			}
+			defer file.Close()
+
+			fileTime := time.Time{}
+
+			rangeStr := r.Header.Get("Range")
+			if rangeStr == "" {
+				fileStat, err := os.Stat(filepathFromSlash)
+				if err == nil {
+					fileTime = fileStat.ModTime()
+				}
+			}
+
+			_, filenameOnly := path.Split(filepathFromSlash)
+			if wsData.verbose {
+				fmt.Printf("    Return file %s\n", filepath.FromSlash(path.Join(rootPath, urlPath)))
+			}
+			http.ServeContent(w, r, filenameOnly, fileTime, file)
 		}
 	}
 
