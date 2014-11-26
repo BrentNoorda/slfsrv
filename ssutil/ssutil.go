@@ -70,3 +70,16 @@ func CleanPathRelativeToCwd(pathspec string, cwd string) string {
 	}
 	return pathspec
 }
+
+// note:  we could use os.PathSeparator, but this means that the
+// config file must be platform dependent
+func PathStringToArray(pathStr string) ([]string, bool) {
+	isRel := strings.Index(pathStr, "/") != 0
+	trimmed := strings.Trim(pathStr, "/")
+
+	out := strings.Split(trimmed, "/")
+	if len(out) == 1 && len(out[0]) == 0 {
+		return out[0:0], isRel
+	}
+	return out, isRel
+}

@@ -9,6 +9,7 @@ import (
 	"github.com/BrentNoorda/slfsrv/browser"
 	"github.com/BrentNoorda/slfsrv/bundle"
 	"github.com/BrentNoorda/slfsrv/compiler"
+	"github.com/BrentNoorda/slfsrv/config"
 	"github.com/BrentNoorda/slfsrv/ssutil"
 	"github.com/BrentNoorda/slfsrv/tempdir"
 	"github.com/BrentNoorda/slfsrv/webserver"
@@ -24,7 +25,7 @@ import (
 func parse_command_line() (helpWanted bool,
 	bundleOut string,
 	compile string, compileFrom string, compileReplaceOK bool,
-	port int, verbose bool, args []string, err error) {
+	port int, verbose bool, configFile string, args []string, err error) {
 	err = nil
 	flag.BoolVar(&helpWanted, "help", false, "show help screen")
 	flag.StringVar(&bundleOut, "bundle", "", "bundle directory into single file")
@@ -33,6 +34,7 @@ func parse_command_line() (helpWanted bool,
 	flag.BoolVar(&compileReplaceOK, "-replace", false, "OK to replace bundle or compile output")
 	flag.IntVar(&port, "port", 0, "port to server localhost app from")
 	flag.BoolVar(&verbose, "verbose", false, "verbose")
+	flag.StringVar(&configFile, "config-file", "", "filename of configuration json file")
 
 	flag.Parse()
 	args = flag.Args()
@@ -66,13 +68,13 @@ func parse_compiled_command_line() (port int, verbose bool, err error) {
 	return
 }
 
-func generate_secret_key() (s string) {
-
+func generate_secret_key() string {
+	s := ""
 	for i := 0; i < 5; i++ {
 		var seg int = 100000 + rand.Intn(100000) // 100000 -> 199999
 		s += strconv.Itoa(seg)
 	}
-	return
+	return s
 }
 
 func usage() {
@@ -128,7 +130,7 @@ func main() {
 
 	var precompiled int = compiler.OffsetOfAppendedData()
 	var err error = nil
-	var bundleOut, compile, compileFrom, patharg, fullpatharg, initPathUrl, initQuery, storeFilespec string
+	var bundleOut, compile, compileFrom, patharg, fullpatharg, initPathUrl, initQuery, storeFilespec, configFile string
 	var helpWanted, compileReplaceOK, verbose, isdir bool
 	var port int
 	var cwd string
@@ -149,6 +151,7 @@ func main() {
 		bundleOut = ""
 		compile = ""
 		compileFrom = ""
+		configFile = ""
 		fullpatharg = ""
 		patharg = ""
 		compileReplaceOK = false
@@ -172,7 +175,7 @@ func main() {
 	} else {
 
 		// parse command-line inputs
-		helpWanted, bundleOut, compile, compileFrom, compileReplaceOK, port, verbose, args, err = parse_command_line()
+		helpWanted, bundleOut, compile, compileFrom, compileReplaceOK, port, verbose, configFile, args, err = parse_command_line()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%s\n", err)
 			helpWanted = true
@@ -188,6 +191,14 @@ func main() {
 			os.Exit(1)
 		}
 		cwd = filepath.ToSlash(cwd)
+
+		config.ParseConfigFile(configFile)
+		settings := config.GetSettings()
+		fmt.Printf("config: %+v\n", *settings)
+
+		if settings.Port != 0 {
+			port = settings.Port
+		}
 
 		if len(args) < 2 {
 			initPathUrl = ""
@@ -289,9 +300,23 @@ func main() {
 			}
 		}
 
-		var secretKey string = generate_secret_key()
+		var secretKey string
+		var keepAliveSeconds int64
+		settings := config.GetSettings()
 
-		port = webserver.ListenAndServe(port, secretKey, zipReader, patharg, fullpatharg, initPathUrl,
+		if settings.SecretKey != "" {
+			secretKey = settings.SecretKey
+		} else {
+			secretKey = generate_secret_key()
+		}
+
+		if settings.KeepAliveSeconds != 0 {
+			keepAliveSeconds = settings.KeepAliveSeconds
+		} else {
+			settings.KeepAliveSeconds = 2
+		}
+
+		port = webserver.ListenAndServe(port, secretKey, keepAliveSeconds, zipReader, patharg, fullpatharg, initPathUrl,
 			verbose, exitChan, myselfExecutable, storeFilespec)
 
 		browser.LaunchDefaultBrowser(port, secretKey, initPathUrl, initQuery, verbose)

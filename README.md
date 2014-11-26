@@ -14,6 +14,7 @@ Jump To:
 * [why was this made and what situations is it good for?](#who-for)
 * [usage, helpscreen version](#usage-helpscreen)
 * [javascript api](#jsapi)
+* [config file](#configfile)
 * [getting the source/executable files](#getting-files)
 * [getting started with demos](#getting-started)
 * [who to contact](#todo)
@@ -113,6 +114,7 @@ From `#slfsrv --help`
                  whether it is OK to replace the <output-name> file
       -port <port#> - specify port to run server on, else will look for a random port
                       that is not in use
+      -config-file <json file> - path to json config file name
       -verbose - write out lots of message about what's going on (else silent)
     EXAMPLES:
       slfsrv
@@ -121,6 +123,7 @@ From `#slfsrv --help`
       slfsrv -compile /myapp
       slfsrv -compile /myapp -compile-from /tools/ss/win/slfsrv.exe
       slfsrv c:\user\me photo/tools/photoview.html
+      slfsrv c:\user\me photo/tools/photoview.html -config-file ./config.json
     VERSION: 0.0.1
 
 ------------------------------------------------------------------------------
@@ -128,6 +131,22 @@ From `#slfsrv --help`
 ### JavaScript API:
 
 [&#x25BA; Javascript API](docs/JSAPI.md) - calls made available to javascript running in the browser
+
+------------------------------------------------------------------------------
+<a name="configfile"></a>
+### Configuration file
+
+If you supply a configuration file, it should be json with the following optional fields:
+
+keepAliveSeconds: (int64) number of seconds to wait for a keepalive message before quitting.
+Supply a large number to allow the app to stay alive even if page is pinging the server.
+
+secretKey: (string) client has this key for rudimentary security. If none supplied, the app
+will generate one.
+
+port: (int) port to run server on.  If none supplied it will find an available port.
+Note that the port can also be supplied on the command line.
+
 
 ------------------------------------------------------------------------------
 <a name="getting-files"></a>
