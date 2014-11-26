@@ -313,7 +313,7 @@ func main() {
 		if settings.KeepAliveSeconds != 0 {
 			keepAliveSeconds = settings.KeepAliveSeconds
 		} else {
-			settings.KeepAliveSeconds = 2
+			keepAliveSeconds = 2
 		}
 
 		port = webserver.ListenAndServe(port, secretKey, keepAliveSeconds, zipReader, patharg, fullpatharg, initPathUrl,
