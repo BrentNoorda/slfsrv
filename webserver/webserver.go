@@ -216,10 +216,10 @@ func web_server_forever(secretKey string, wsData *webserverData,
 	os.Exit(1)
 }
 
-func keep_aliver(keepAliveChan chan int, exitChan chan int, verbose bool) {
+func keep_aliver(keepAliveChan chan int, exitChan chan int, verbose bool, keepAliveSeconds int64) {
 	// quit if not tickled within a few seconds
 
-	var maxwait time.Duration = time.Second * 10 // first call can take longer than others
+	maxwait := time.Second * time.Duration(keepAliveSeconds)
 	for {
 		select {
 		case <-keepAliveChan:
@@ -229,11 +229,10 @@ func keep_aliver(keepAliveChan chan int, exitChan chan int, verbose bool) {
 			}
 			exitChan <- 1
 		}
-		maxwait = time.Second * 2
 	}
 }
 
-func ListenAndServe(port int, secretKey string, zipReader *zip.Reader,
+func ListenAndServe(port int, secretKey string, keepAliveSeconds int64, zipReader *zip.Reader,
 	rootPath string, fullRootPath string, initFile string,
 	verbose bool, exitChan chan int, myselfExecutable string,
 	storeFilespec string) int {
@@ -262,7 +261,7 @@ func ListenAndServe(port int, secretKey string, zipReader *zip.Reader,
 		zipReader: zipReader}
 	go web_server_forever(secretKey, &wsData, port, rootPath, myselfExecutable)
 
-	go keep_aliver(keepAliveChan, exitChan, verbose)
+	go keep_aliver(keepAliveChan, exitChan, verbose, keepAliveSeconds)
 
 	return port
 }
