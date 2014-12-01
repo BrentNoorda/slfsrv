@@ -188,7 +188,7 @@ func web_server_forever(secretKey string, wsData *webserverData,
 			}
 			defer file.Close()
 
-			fileTime := time.Time{}
+			var fileTime time.Time = time.Time{}
 
 			rangeStr := r.Header.Get("Range")
 			if rangeStr == "" {
@@ -218,17 +218,28 @@ func web_server_forever(secretKey string, wsData *webserverData,
 
 func keep_aliver(keepAliveChan chan int, exitChan chan int, verbose bool, keepAliveSeconds int64) {
 	// quit if not tickled within a few seconds
+	var waitTime, keepAliveTime time.Duration
+	keepAliveTime = time.Second * time.Duration(keepAliveSeconds)
 
-	maxwait := time.Second * time.Duration(keepAliveSeconds)
+	// slow computers might take a little while for the browser to pop up, so on the very first
+	// call we should give extra time for the client
+	var MIN_FIRST_CALL_WAIT_TIME int64 = 10 // found by trial and error against some slow machines
+	if keepAliveSeconds < MIN_FIRST_CALL_WAIT_TIME {
+		waitTime = time.Second * time.Duration(MIN_FIRST_CALL_WAIT_TIME)
+	} else {
+		waitTime = keepAliveTime
+	}
+
 	for {
 		select {
 		case <-keepAliveChan:
-		case <-time.After(maxwait):
+		case <-time.After(waitTime):
 			if verbose {
 				fmt.Println("CONNECTION WITH CLIENT LOST!")
 			}
 			exitChan <- 1
 		}
+		waitTime = keepAliveTime
 	}
 }
 
