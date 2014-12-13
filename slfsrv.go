@@ -111,6 +111,7 @@ func usage() {
 		"             whether it is OK to replace the <output-name> file",
 		"  -port <port#> - specify port to run server on, else will look for a random port",
 		"                  that is not in use",
+		"  -config-file <json file> - path to json config file name",
 		"  -verbose - write out lots of message about what's going on (else silent)",
 		"EXAMPLES:",
 		"  slfsrv",
@@ -119,6 +120,7 @@ func usage() {
 		"  slfsrv -compile /myapp",
 		"  slfsrv -compile /myapp -compile-from /tools/ss/win/slfsrv.exe",
 		"  slfsrv c:\\user\\me photo/tools/photoview.html",
+		"  slfsrv c:\\user\\me photo/tools/photoview.html -config-file ./config.json",
 		"VERSION: " + bundle.Version,
 		"",
 	} {
