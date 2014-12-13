@@ -144,24 +144,38 @@ func web_server_forever(secretKey string, wsData *webserverData,
 			w.Header().Set("Content-Type", mimeType)
 		}
 
+		var fileTime time.Time = time.Time{}
+
 		if wsData.zipReader != nil {
-			// return data from zip file
-			var data []byte
 
 			var filespec string = urlPath
 
-			data, err = bundle.ReadFile(wsData.zipReader, filespec)
+			if wsData.verbose {
+				rangeStr := r.Header.Get("Range")
+				if rangeStr != "" {
+					fmt.Printf("        Range: %s\n", rangeStr)
+				}
+			}
+
+			filepathFromSlash := filepath.FromSlash(filespec)
+
+			var data *bundle.SelfservingReadSeeker
+
+			data, err = bundle.NewSelfservingReadSeeker(wsData.zipReader, filespec)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "    Unable to read file %s\n", filepath.FromSlash(filespec))
+				fmt.Fprintf(os.Stderr, "    Unable to read file %s\n", filepathFromSlash)
 				errorHandler(w, r, http.StatusNotFound)
 				return
 			} else {
+				defer data.Close()
 				if wsData.verbose {
-					fmt.Printf("    Return file %s\n", filepath.FromSlash(filespec))
+					fmt.Printf("    Return file %s\n", filepathFromSlash)
 				}
-				fmt.Fprintf(w, "%s", data)
-			}
 
+				_, filenameOnly := path.Split(filepathFromSlash)
+
+				http.ServeContent(w, r, filenameOnly, fileTime, data)
+			}
 		} else {
 			// return RAW data from filesystem
 
@@ -188,13 +202,15 @@ func web_server_forever(secretKey string, wsData *webserverData,
 			}
 			defer file.Close()
 
-			var fileTime time.Time = time.Time{}
-
 			rangeStr := r.Header.Get("Range")
 			if rangeStr == "" {
 				fileStat, err := os.Stat(filepathFromSlash)
 				if err == nil {
 					fileTime = fileStat.ModTime()
+				}
+			} else {
+				if wsData.verbose {
+					fmt.Printf("        Range: %s\n", rangeStr)
 				}
 			}
 

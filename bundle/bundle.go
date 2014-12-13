@@ -13,6 +13,101 @@ import (
 
 const Version string = "0.0.1"
 
+/***************** SelfserverReadSeeker - ReadSeeker implementation *****************/
+
+type SelfservingReadSeeker struct {
+	seek   int64
+	curpos int64
+	f      *zip.File
+	fSize  int64
+	rc     io.ReadCloser
+}
+
+func NewSelfservingReadSeeker(reader *zip.Reader, filespec string) (*SelfservingReadSeeker, error) {
+	var f *zip.File
+	for _, f = range reader.File {
+		if f.Name == filespec {
+			return &SelfservingReadSeeker{seek: 0, curpos: 0, f: f, fSize: int64(f.UncompressedSize64), rc: nil}, nil
+		}
+	}
+	return nil, errors.New("file \"" + filespec + "\" not found in bundle")
+}
+
+func (ssrs *SelfservingReadSeeker) Close() {
+	if ssrs.rc != nil {
+		ssrs.rc.Close()
+		ssrs.rc = nil
+		ssrs.seek = 0
+		ssrs.curpos = 0
+	}
+}
+
+func (ssrs *SelfservingReadSeeker) Read(p []byte) (int, error) {
+	var pLen int = len(p)
+
+	if pLen == 0 {
+		// asking for no data
+		return 0, nil
+	} else if ssrs.fSize <= ssrs.seek {
+		// cannot read beyond EOF
+		return 0, io.EOF
+	} else {
+
+		var err error
+
+		if ssrs.rc == nil {
+			if ssrs.rc, err = ssrs.f.Open(); err != nil {
+				return 0, err
+			}
+		}
+
+		var readCount int
+
+		// if not currently at the read position, then skip to there
+		for ssrs.curpos < ssrs.seek {
+			const BUF_CHUNK_SIZE int64 = 20000
+			var wantToReadCount int64 = ssrs.seek - ssrs.curpos
+			if BUF_CHUNK_SIZE < wantToReadCount {
+				wantToReadCount = BUF_CHUNK_SIZE
+			}
+			var buffer []byte = make([]byte, wantToReadCount)
+			readCount, err = io.ReadFull(ssrs.rc, buffer)
+			if (err != nil) || (readCount != int(wantToReadCount)) {
+				return 0, io.EOF
+			}
+			ssrs.curpos += wantToReadCount
+		}
+
+		readCount, err = io.ReadFull(ssrs.rc, p)
+		ssrs.curpos += int64(readCount)
+		ssrs.seek = ssrs.curpos
+		return readCount, err
+	}
+}
+
+func (ssrs *SelfservingReadSeeker) Seek(offset int64, whence int) (int64, error) {
+	var err error
+	if whence == 1 {
+		offset += ssrs.seek
+	} else if whence == 2 {
+		offset = ssrs.fSize + offset
+	}
+	/* else whence is 0 and sets file position absolutely */
+	if offset < 0 {
+		err = errors.New("invalid negative file offset")
+	} else {
+		if ssrs.rc != nil {
+			if offset < ssrs.curpos {
+				ssrs.Close()
+			}
+		}
+		ssrs.seek = offset
+	}
+	return ssrs.seek, err
+}
+
+/***************** selfserverReaderAt - ReaderAt implementation *****************/
+
 type selfservingReaderAt struct {
 	offset int64
 	f      *os.File

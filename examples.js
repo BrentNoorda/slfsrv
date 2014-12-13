@@ -89,7 +89,9 @@ var gSources = [
     { id: 'example-menus',             name: "menus to web and local items",
       src: ['menu/main_menu.html','menu/main_menu.js',
             'menu/secondary_menu.html','menu/secondary_menu.js',
-            'menu/javascript/slfsrv-menu.js'] }
+            'menu/javascript/slfsrv-menu.js'] },
+    { id: 'example-video-test',        name: "video-test",
+      src: ['video-test/index.html'] }
 ];
 
 function initialize(count) {

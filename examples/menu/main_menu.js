@@ -211,7 +211,7 @@ addMenuCategory( "News", "https://ssl.gstatic.com/news-static/img/favicon.ico", 
     })
 ] );
 
-addMenuCategory( "Nerdy", "http://solitarynerd.files.wordpress.com/2014/05/solitary-nerd-family-emoticon.png?w=644", [
+addMenuCategory( "Nerdy", "http://www.kia-forums.com/images/Kia-Forums/smilies/tango_face_glasses.png", [
     menuOption({
         title: "Hacker News",
         action: function(){
