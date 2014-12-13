@@ -64,18 +64,19 @@ func (ssrs *SelfservingReadSeeker) Read(p []byte) (int, error) {
 		var readCount int
 
 		// if not currently at the read position, then skip to there
-		for ssrs.curpos < ssrs.seek {
-			const BUF_CHUNK_SIZE int64 = 20000
-			var wantToReadCount int64 = ssrs.seek - ssrs.curpos
-			if BUF_CHUNK_SIZE < wantToReadCount {
-				wantToReadCount = BUF_CHUNK_SIZE
+		if ssrs.curpos != ssrs.seek {
+			var bigBuffer [100000]byte
+			for ssrs.curpos < ssrs.seek {
+				var wantToReadCount int64 = ssrs.seek - ssrs.curpos
+				if int64(len(bigBuffer)) < wantToReadCount {
+					wantToReadCount = int64(len(bigBuffer))
+				}
+				readCount, err = io.ReadFull(ssrs.rc, bigBuffer[0:wantToReadCount])
+				if (err != nil) || (readCount != int(wantToReadCount)) {
+					return 0, io.EOF
+				}
+				ssrs.curpos += wantToReadCount
 			}
-			var buffer []byte = make([]byte, wantToReadCount)
-			readCount, err = io.ReadFull(ssrs.rc, buffer)
-			if (err != nil) || (readCount != int(wantToReadCount)) {
-				return 0, io.EOF
-			}
-			ssrs.curpos += wantToReadCount
 		}
 
 		readCount, err = io.ReadFull(ssrs.rc, p)
