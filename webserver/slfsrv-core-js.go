@@ -55,7 +55,7 @@ var SLFSRV = {
         SLASH : (SLFSRV.OS === "windows") ? "\\" : "/",
 
         /* SLFSRV.dir.getcwd() */
-        getcwd : function(onSuccess,onError) {
+        getcwd : function(args,onSuccess,onError) {
             var promise = new Promise(function(resolve,reject){
                 SLFSRV.callServer("cwd.get",{},function(result){
                     resolve(result.cwd);
@@ -65,22 +65,18 @@ var SLFSRV = {
         },
 
         /* SLFSRV.dir.setcwd() */
-        setcwd : function(dir,onSuccess,onError) {
+        setcwd : function(args,onSuccess,onError) {
             var promise = new Promise(function(resolve,reject){
-                SLFSRV.callServer("cwd.set",{ dir: dir },resolve,reject);
+                SLFSRV.callServer("cwd.set",{ dir: args.dirname },resolve,reject);
             });
             return return_callbacks_or_promise(onSuccess,onError,promise);
         },
 
         /* SLFSRV.dir.list() */
-        list : function( optionalDir,onSuccess,onError ) {
-            if ( (typeof optionalDir) !== "string" ) {
-                onError = onSuccess;
-                onSuccess = optionalDir;
-                optionalDir = ".";
-            }
+        list : function(args,onSuccess,onError) {
             var promise = new Promise(function(resolve,reject){
-                SLFSRV.callServer("dir.list",{ dir:optionalDir },function(ret){
+                var obj = { dir: (args.dirname === undefined ? "." : args.dirname) };
+                SLFSRV.callServer("dir.list",obj,function(ret){
                     var i, list;
                     list = ret.list;
                     for ( i = 0; i < list.length; i++ ) {
@@ -93,9 +89,9 @@ var SLFSRV = {
         },
 
         /* SLFSRV.dir.exists() */
-        exists : function(dirname,onSuccess,onError) {
+        exists : function(args,onSuccess,onError) {
             var promise = new Promise(function(resolve,reject){
-                SLFSRV.callServer("dir.exists",{ dir:dirname },function(result){
+                SLFSRV.callServer("dir.exists",{ dir:args.dirname },function(result){
                     resolve( result.exists );
                 },reject);
             });
@@ -105,9 +101,9 @@ var SLFSRV = {
 
     SLFSRV.env = {
         /* SLFSRV.env.get() */
-        get : function(key,onSuccess,onError) {
+        get : function(args,onSuccess,onError) {
             var promise = new Promise(function(resolve,reject){
-                SLFSRV.callServer("env.get",{ key:key },function(result){
+                SLFSRV.callServer("env.get",{ key:args.key },function(result){
                     resolve(result.value);
                 },reject);
             });
@@ -115,9 +111,9 @@ var SLFSRV = {
         },
 
         /* SLFSRV.env.set() */
-        set : function(key,value,onSuccess,onError) {
+        set : function(args,onSuccess,onError) {
             var promise = new Promise(function(resolve,reject){
-                SLFSRV.callServer("env.set",{ key:key, value:value },resolve,reject);
+                SLFSRV.callServer("env.set",{ key:args.key, value:args.val },resolve,reject);
             });
             return return_callbacks_or_promise(onSuccess,onError,promise);
         }
@@ -125,14 +121,10 @@ var SLFSRV = {
 
     SLFSRV.file = {
         /* SLFSRV.file.read() */
-        read : function(filename,optionalMode,onSuccess,onError) {
-            if ( typeof(optionalMode) === "function" ) {
-                onError = onSuccess;
-                onSuccess = optionalMode;
-                optionalMode = "text";
-            }
+        read : function(args,onSuccess,onError) {
             var promise = new Promise(function(resolve,reject){
-                SLFSRV.callServer("file.read",{ file:filename, mode:optionalMode },function(result){
+                var obj = { file:args.filename, mode:(args.mode === undefined ? "text" : args.mode) };
+                SLFSRV.callServer("file.read",obj,function(result){
                     resolve( result.contents );
                 },reject);
             });
@@ -140,34 +132,30 @@ var SLFSRV = {
         },
 
         /* SLFSRV.file.write() */
-        write : function(filename,optionalMode,contents,onSuccess,onError) {
-            if ( (typeof(contents) === "function") || (contents === undefined) ) {
-                onError = onSuccess;
-                onSuccess = contents;
-                contents = optionalMode;
-                optionalMode = ""; // same as "text,create"
-            }
+        write : function(args,onSuccess,onError) {
             var promise = new Promise(function(resolve,reject){
+                var i, bytes, obj;
+                obj = { file:args.filename, mode:( args.mode === undefined ? "" : args.mode ) };
                 // i suspect there's a bug in the JSON decoding on the golang server, so if binary
                 // mode then send this whole thing as an array of bytes
-                if ( -1 !== optionalMode.indexOf("binary") ) {
-                    var i, bytes;
+                if ( -1 !== obj.mode.indexOf("binary") ) {
                     bytes = [];
-                    for ( i = 0; i < contents.length; i++ ) {
-                        bytes.push(contents.charCodeAt(i));
+                    for ( i = 0; i < args.contents.length; i++ ) {
+                        bytes.push(args.contents.charCodeAt(i));
                     }
-                    SLFSRV.callServer("file.write",{ file:filename, mode:optionalMode, bytes:bytes },resolve,reject);
+                    obj.bytes = bytes;
                 } else {
-                    SLFSRV.callServer("file.write",{ file:filename, mode:optionalMode, contents:contents },resolve,reject);
+                    obj.contents = args.contents;
                 }
+                SLFSRV.callServer("file.write",obj,resolve,reject);
             });
             return return_callbacks_or_promise(onSuccess,onError,promise);
         },
 
         /* SLFSRV.file.exists() */
-        exists : function(filename,onSuccess,onError) {
+        exists : function(args,onSuccess,onError) {
             var promise = new Promise(function(resolve,reject){
-                SLFSRV.callServer("file.exists",{ file:filename },function(result){
+                SLFSRV.callServer("file.exists",{ file:args.filename },function(result){
                     resolve( result.exists );
                 },reject);
             });
@@ -175,9 +163,9 @@ var SLFSRV = {
         },
 
         /* SLFSRV.file.remove() */
-        remove : function(filename,onSuccess,onError) {
+        remove : function(args,onSuccess,onError) {
             var promise = new Promise(function(resolve,reject){
-                SLFSRV.callServer("file.remove",{ file:filename },resolve,reject);
+                SLFSRV.callServer("file.remove",{ file:args.filename },resolve,reject);
             });
             return return_callbacks_or_promise(onSuccess,onError,promise);
         }
@@ -185,31 +173,26 @@ var SLFSRV = {
 
     SLFSRV.store = {
         /* SLFSRV.store.get() */
-        get : function(key,optionalDefaultValue,onSuccess,onError) {
-            if ( typeof(optionalDefaultValue) === "function" ) {
-                onError = onSuccess;
-                onSuccess = optionalDefaultValue;
-                optionalDefaultValue = undefined;
-            }
+        get : function(args,onSuccess,onError) {
             var promise = new Promise(function(resolve,reject){
-                SLFSRV.callServer("store.get",{ key:key },function(result){
-                    resolve( result.hasOwnProperty('value') ? result.value : optionalDefaultValue );
+                SLFSRV.callServer("store.get",{ key:args.key },function(result){
+                    resolve( result.hasOwnProperty('value') ? result.value : args.defaultVal );
                 },reject);
             });
             return return_callbacks_or_promise(onSuccess,onError,promise);
         },
 
         /* SLFSRV.store.set() */
-        set : function(key,value,onSuccess,onError) {
+        set : function(args,onSuccess,onError) {
             var promise = new Promise(function(resolve,reject){
-                var obj = ( value === undefined ) ? { key:key } : { key:key, value:value };
+                var obj = ( args.val === undefined ) ? { key:args.key } : { key:args.key, value:args.val };
                 SLFSRV.callServer("store.set",obj,resolve,reject);
             });
             return return_callbacks_or_promise(onSuccess,onError,promise);
         },
 
         /* SLFSRV.store.list() */
-        list : function(onSuccess,onError) {
+        list : function(args,onSuccess,onError) {
             var promise = new Promise(function(resolve,reject){
                 SLFSRV.callServer("store.list",{},function(obj){
                     resolve(obj.keys);
@@ -220,25 +203,21 @@ var SLFSRV = {
     };
 
     /* SLFSRV.exec() */
-    SLFSRV.exec = function(options/*program,args,input,timeout*/,onSuccess,onError) {
+    SLFSRV.exec = function(args/*program,args,input,timeout*/,onSuccess,onError) {
         var promise = new Promise(function(resolve,reject){
-            var obj = { program: options.program,
-                        args: (options.args === undefined) ? {} : options.args,
-                        input: (options.input === undefined) ? "" : options.input };
-            SLFSRV.callServer("exec",obj,resolve,reject,options.timeout);
+            var obj = { program: args.program,
+                        args: (args.args === undefined) ? {} : args.args,
+                        input: (args.input === undefined) ? "" : args.input };
+            SLFSRV.callServer("exec",obj,resolve,reject,args.timeout);
         });
         return return_callbacks_or_promise(onSuccess,onError,promise);
     };
 
     /* SLFSRV.tempdir() */
-    SLFSRV.tempdir = function(optionalUnpackDir,onSuccess,onError) {
-        if ( typeof(optionalUnpackDir) === "function" ) {
-            onError = onSuccess;
-            onSuccess = optionalUnpackDir;
-            optionalUnpackDir = "";
-        }
+    SLFSRV.tempdir = function(args,onSuccess,onError) {
         var promise = new Promise(function(resolve,reject){
-            SLFSRV.callServer("tempdir",{dir:optionalUnpackDir},function(result){
+            var obj = { dir: (args.unpackDir === undefined) ? "" : args.unpackDir };
+            SLFSRV.callServer("tempdir",obj,function(result){
                 resolve(result.dir);
             },reject);
         });

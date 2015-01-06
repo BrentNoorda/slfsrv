@@ -132,7 +132,7 @@ function test() {
     },{
         name: 'save the current working directory',
         test: function() {
-            SLFSRV.dir.getcwd(function(cwd){
+            SLFSRV.dir.getcwd({},function(cwd){
                 starting_cwd = cwd;
                 output(starting_cwd);
                 output("done");
@@ -145,8 +145,8 @@ function test() {
         name: 'change to directory of this test, which is: ' + gMyPath,
         test: function() {
             output("CWD = " + gMyPath);
-            SLFSRV.dir.setcwd(gMyPath,function(){
-                SLFSRV.dir.getcwd(function(cwd){
+            SLFSRV.dir.setcwd({dirname:gMyPath},function(){
+                SLFSRV.dir.getcwd({},function(cwd){
                     if ( cwd !== gMyPath ) {
                         error("changed to unexpected directory: " + cwd);
                     } else {
@@ -166,7 +166,7 @@ function test() {
             var ignore_files = " .DS_Store text-sample-output.txt ", foundDirList = [];
 
             function dirList(rootname,onComplete) {
-                SLFSRV.dir.list(rootname,function(list){
+                SLFSRV.dir.list({dirname:rootname},function(list){
                     function next_from_list() {
                         var f, ignore;
                         if ( list.length === 0 ) {
@@ -263,9 +263,9 @@ function test() {
                     mode = modes.shift();
                     output('test reading "' + srcfile + '" in ' + mode + ' mode...');
                     if ( mode === undefined ) {
-                        SLFSRV.file.read(srcfile,goodRead,badRead);
+                        SLFSRV.file.read({filename:srcfile},goodRead,badRead);
                     } else {
-                        SLFSRV.file.read(srcfile,mode,goodRead,badRead);
+                        SLFSRV.file.read({filename:srcfile,mode:mode},goodRead,badRead);
                     }
                 }
             }
@@ -288,7 +288,7 @@ function test() {
                 next_test();
             }
 
-            SLFSRV.file.read(srcfile,goodRead,badRead);
+            SLFSRV.file.read({filename:srcfile},goodRead,badRead);
         }
     },{
         name: 'test reading file in binary mode:',
@@ -315,7 +315,7 @@ function test() {
                 error(err);
             }
 
-            SLFSRV.file.exists(srcfile,good,bad);
+            SLFSRV.file.exists({filename:srcfile},good,bad);
         }
     },{
         name: 'test file.exists() for file that does not exist:',
@@ -336,7 +336,7 @@ function test() {
                 error(err);
             }
 
-            SLFSRV.file.exists(srcfile,good,bad);
+            SLFSRV.file.exists({filename:srcfile},good,bad);
         }
     },{
         name: 'test file.exists() for directory that should fail as a file',
@@ -357,7 +357,7 @@ function test() {
                 error(err);
             }
 
-            SLFSRV.file.exists(srcfile,good,bad);
+            SLFSRV.file.exists({filename:srcfile},good,bad);
         }
     },{
         name: 'test dir.exists() for dir that exists:',
@@ -378,7 +378,7 @@ function test() {
                 error(err);
             }
 
-            SLFSRV.dir.exists(srcdir,good,bad);
+            SLFSRV.dir.exists({dirname:srcdir},good,bad);
         }
     },{
         name: 'test dir.exists() for dir that does not exist:',
@@ -399,7 +399,7 @@ function test() {
                 error(err);
             }
 
-            SLFSRV.dir.exists(srcdir,good,bad);
+            SLFSRV.dir.exists({dirname:srcdir},good,bad);
         }
     },{
         name: 'test dir.exists() for file that should fail as a dir',
@@ -420,7 +420,7 @@ function test() {
                 error(err);
             }
 
-            SLFSRV.dir.exists(srcdir,good,bad);
+            SLFSRV.dir.exists({dirname:srcdir},good,bad);
         }
     },{
         name: 'test writing file in combinations of text/binary and create/append modes',
@@ -440,12 +440,12 @@ function test() {
                 if ( firstHalfOfAppend ) {
                     // for append mode do it all twice
                     firstHalfOfAppend = false;
-                    SLFSRV.file.write(dstfile,mode,isBinary ? text_sample_binary : text_sample_text,
+                    SLFSRV.file.write({filename:dstfile,mode:mode,contents:isBinary ? text_sample_binary : text_sample_text},
                                       goodWrite,badWrite);
                 } else {
 
                     // read in what we just wrote to make sure it's what we expect
-                    SLFSRV.file.read(dstfile,isBinary ? "binary" : "text").then( function(data){
+                    SLFSRV.file.read({filename:dstfile,mode:isBinary ? "binary" : "text"}).then( function(data){
 
                         if ( isBinary ) {
                             expect = text_sample_binary;
@@ -488,14 +488,14 @@ function test() {
                         isBinary = false;
                         isAppend = false;
                         firstHalfOfAppend = false;
-                        SLFSRV.file.write(dstfile,text_sample_text,goodWrite,badWrite);
+                        SLFSRV.file.write({filename:dstfile,contents:text_sample_text},goodWrite,badWrite);
                     } else {
                         isBinary = ( -1 !== mode.indexOf("binary") );
                         isAppend = ( -1 !== mode.indexOf("append") );
                         firstHalfOfAppend = isAppend;
-                        SLFSRV.file.write(dstfile,
-                                          mode.replace("append","xxx"),
-                                          isBinary ? text_sample_binary : text_sample_text,
+                        SLFSRV.file.write({ filename: dstfile,
+                                            mode: mode.replace("append","xxx"),
+                                            contents: isBinary ? text_sample_binary : text_sample_text },
                                           goodWrite,badWrite);
                     }
                 }
@@ -522,7 +522,7 @@ function test() {
                 error(err);
             }
 
-            SLFSRV.file.exists(dstfile,good,bad);
+            SLFSRV.file.exists({filename:dstfile},good,bad);
         }
     },{
         name: 'test file.remove() for file we just created in file.write test',
@@ -539,7 +539,7 @@ function test() {
                 error(err);
             }
 
-            SLFSRV.file.remove(dstfile,good,bad);
+            SLFSRV.file.remove({filename:dstfile},good,bad);
         }
     },{
         name: 'test that that file is now gone',
@@ -560,7 +560,7 @@ function test() {
                 error(err);
             }
 
-            SLFSRV.file.exists(dstfile,good,bad);
+            SLFSRV.file.exists({filename:dstfile},good,bad);
         }
     },{
         name: 'test that cannot use file.remove() to remove a directory',
@@ -578,7 +578,7 @@ function test() {
                 next_test();
             }
 
-            SLFSRV.file.remove(dstfile,good,bad);
+            SLFSRV.file.remove({filename:dstfile},good,bad);
         }
     }];
 

@@ -70,10 +70,10 @@ then return to the original directory.
 ##### callback version:
 
     function cd_foo_del_blah_return() {
-        SLFSRV.dir.getcwd(function(original_cwd){
-            SLFSRV.dir.setcwd("/foo",function(){
-                SLFSRV.file.remove("blah.txt",function(){
-                    SLFSRV.dir.setcwd(original_cwd,function(){
+        SLFSRV.dir.getcwd({},function(original_cwd){
+            SLFSRV.dir.setcwd({dirname:"/foo"},function(){
+                SLFSRV.file.remove({filename:"blah.txt"},function(){
+                    SLFSRV.dir.setcwd({dirname:original_cwd},function(){
                         alert("all went well!");
                     },function(err){
                         throw err;
@@ -93,13 +93,13 @@ then return to the original directory.
 
     function cd_foo_del_blah_return() {
         var original_cwd;
-        SLFSRV.dir.getcwd().then(function(cwd){
+        SLFSRV.dir.getcwd({}).then(function(cwd){
             original_cwd = cwd;
-            return SLFSRV.dir.setcwd("/foo");
+            return SLFSRV.dir.setcwd({dirname:"/foo"});
         }).then(function(){
-            return SLFSRV.file.remove("blah.txt");
+            return SLFSRV.file.remove({filename:"blah.txt"});
         }).then(function(){
-            return SLFSRV.dir.setcwd(original_cwd);
+            return SLFSRV.dir.setcwd({dirname:original_cwd});
         }).then(function(){
             alert("all went well!");
         }).catch(function(err){
@@ -135,11 +135,11 @@ then return to the original directory.
 
 ##### callback version:
 
-    SLFSRV.exec( options<object { program<string>, args<optional array>,
-                                  input<optional string>, timeout<optional int> },
+    SLFSRV.exec( args<object { program<string>, args<optional array>,
+                               input<optional string>, timeout<optional int> }>,
                  onsuccess<function(outcome<object>){}>,
                  onerror<optional function(error<Error>){}> )
-    // options: object setting input values for exec
+    // args:
     //     .program: name of the command to execute
     //     .args: optional array of commands to pass to the program
     //     .input: optional string, if not "" then this will be passed to the program via stdin
@@ -153,7 +153,7 @@ then return to the original directory.
     //     error: Error object
     // return: undefined
     // ex: /* use shell to display full listing for the current directory */
-    //     SLFSRV.dir.getcwd(function(cwd){
+    //     SLFSRV.dir.getcwd({},function(cwd){
     //         var msg, program, args;
     //         msg = "Directory listing for: " + cwd + "\n\n";
     //
@@ -180,11 +180,11 @@ then return to the original directory.
 
 ##### promise version:
 
-    SLFSRV.exec( options<object { program<string>, args<optional array>,
-                                  input<optional string>, timeout<optional int> } )
+    SLFSRV.exec( args<object { program<string>, args<optional array>,
+                              input<optional string>, timeout<optional int> }> )
           .then( resolve<function(outcome<object>){}>,
                  reject<optional function(error<Error>){}> )
-    // options: object setting input values for exec
+    // args:
     //     .program: name of the command to execute
     //     .args: optional array of commands to pass to the program
     //     .input: optional string, if not "" then this will be passed to the program via stdin
@@ -199,7 +199,7 @@ then return to the original directory.
     // return: Promise
     // ex: /* use shell to display full listing for the current directory */
     //     var msg = "";
-    //     SLFSRV.dir.getcwd().next(function(cwd){
+    //     SLFSRV.dir.getcwd({}).next(function(cwd){
     //         var program, args;
     //         msg += "Directory listing for: " + cwd + "\n\n";
     //
@@ -236,10 +236,11 @@ This function is particularly useful in slfsrv files created with the "-bundle" 
 
 ##### callback version:
 
-    SLFSRV.tempdir( unpackDir<optional string>,
+    SLFSRV.tempdir( args<object { unpackDir<optional string> }>,
                     onsuccess<function(dirPath<string>){}>,
                     onerror<optional function(error<Error>){}> )
-    // unpackDir - a label to five the temporary directory (this will not be the
+    // args:
+    //     .unpackDir - a label to find the temporary directory (this will not be the
     //             name of the tempdir). If there are any top-level directories within
     //             SLFSRV.ROOTPATH with this label, then on the first call everything
     //             within that directory will be copied to the new tempdir.
@@ -252,7 +253,7 @@ This function is particularly useful in slfsrv files created with the "-bundle" 
     //     error: Error object
     // return: undefined
     // ex: /* example to unpack Mac or Windows executable, then execute it */
-    //     SLFSRV.tempdir( 'executables', function(dir) {
+    //     SLFSRV.tempdir( {unpackDir:'executables'}, function(dir) {
     //         var program, args;
     //         if ( SLFSRV.os === "windows" ) {
     //             program = "cmd.exe";
@@ -275,10 +276,11 @@ This function is particularly useful in slfsrv files created with the "-bundle" 
 
 ##### promise version:
 
-    SLFSRV.tempdir( unpackDir<optional string> )
+    SLFSRV.tempdir( args<object { unpackDir<optional string> }> )
           .then( resolve<function(dirPath<string>){}>,
                  reject<optional function(error<Error>){}> )
-    // unpackDir - a label to five the temporary directory (this will not be the
+    // args:
+    //     .unpackDir - a label to find the temporary directory (this will not be the
     //             name of the tempdir). If there are any top-level directories within
     //             SLFSRV.ROOTPATH with this label, then on the first call everything
     //             within that directory will be copied to the new tempdir.
@@ -291,7 +293,7 @@ This function is particularly useful in slfsrv files created with the "-bundle" 
     //     error: Error object
     // return: Promise
     // ex: /* example to unpack Mac or Windows executable, then execute it */
-    //     SLFSRV.tempdir( 'executables' ).then( function(dir) {
+    //     SLFSRV.tempdir( {unpackDir:'executables'} ).then( function(dir) {
     //         var program, args;
     //         if ( SLFSRV.os === "windows" ) {
     //             program = "cmd.exe";
@@ -321,47 +323,49 @@ This function is particularly useful in slfsrv files created with the "-bundle" 
 
 ##### callback version:
 
-    SLFSRV.store.get( key<string>, default<optional value if key does not exist>,
+    SLFSRV.store.get( args<object { key<string>, defaultVal<optional value if key does not exist> }>,
                       onsuccess<function(value){}>,
                       onerror<optional function(error<Error>){}> )
-    // key: unique name for stored value
-    // default: optional value if key does not exist, else would return undefined
+    // args:
+    //     .key: unique name for stored value
+    //     .defaultVal: optional value if key does not exist, else would return undefined
     // onsuccess: return the stored value (or undefined if no stored value for that key)
     // onerror: called if there is an error (rare that this would happen)
     //     error: Error object
     // return: undefined
     // note: if there is no value store for key, onsuccess will return undefined (and not onerror)
-    // ex: SLFSRV.store.get( "favoriteColor", function(value) {
+    // ex: SLFSRV.store.get( {key:"favoriteColor"}, function(value) {
     //         if ( value === undefined ) {
     //             SLFSRV.alert( "no favorite color" );
     //         } else {
     //             SLFSRV.alert( "favorite color is " + value );
     //         }
     //     });
-    //     SLFSRV.store.get( "counter", 0, function(value) {
+    //     SLFSRV.store.get( {key:"counter", defaultVal:0}, function(value) {
     //         SLFSRV.alert( "counter called " + counter + " times" );
     //     });
 
 ##### promise version:
 
-    SLFSRV.store.get( key<string>, default<optional value if key does not exist> )
+    SLFSRV.store.get( args<object { key<string>, defaultVal<optional value if key does not exist> }> )
                 .then( resolve<function(value){}>,
                        reject<optional function(error<Error>){}> )
-    // key: unique name for stored value
-    // default: optional value if key does not exist, else would return undefined
+    // args:
+    //     .key: unique name for stored value
+    //     .defaultVal: optional value if key does not exist, else would return undefined
     // resolve: return the stored value (or undefined if no stored value for that key)
     // reject: called if there is an error (rare that this would happen)
     //     error: Error object
     // return: Promise
     // note: if there is no value store for key, resolve will return undefined (and not onerror)
-    // ex: SLFSRV.store.get( "favoriteColor" ).next(function(value) {
+    // ex: SLFSRV.store.get( {key:"favoriteColor"} ).next(function(value) {
     //         if ( value === undefined ) {
     //             SLFSRV.alert( "no favorite color" );
     //         } else {
     //             SLFSRV.alert( "favorite color is " + value );
     //         }
     //     });
-    //     SLFSRV.store.get( "counter", 0 ).next(function(value) {
+    //     SLFSRV.store.get( {key:"counter", defaultVal:0} ).next(function(value) {
     //         SLFSRV.alert( "counter called " + counter + " times" );
     //     });
 
@@ -370,56 +374,62 @@ This function is particularly useful in slfsrv files created with the "-bundle" 
 
 ##### callback version:
 
-    SLFSRV.store.set( key<string>, value, onsuccess<function(){}>,
+    SLFSRV.store.set( args<object { key<string>, val }>,
+                      onsuccess<function(){}>,
                       onerror<optional function(error<Error>){}> )
-    // key: unique name for stored value
-    // value: any javascript value that can be stored as json (or undefined to remove key)
+    // args:
+    //     .key: unique name for stored value
+    //     .val: any javascript value that can be stored as json (or undefined to remove key)
     // onsuccess: called when value has been stored (or removed for undefined)
     // onerror: called if there is an error storing value
     //     error: Error object
     // return: undefined
-    // ex: SLFSRV.store.set( "favoritColor", "green", function(){} );
+    // ex: SLFSRV.store.set( {key:"favoritColor", val:"green"}, function(){} );
 
 ##### promise version:
 
-    SLFSRV.store.set( key<string>, value )
+    SLFSRV.store.set( args<object { key<string>, val }> )
                 .then( resolve<function(){}>,
                        reject<optional function(error<Error>){}> )
-    // key: unique name for stored value
-    // value: any javascript value that can be stored as json (or undefined to remove key)
+    // args:
+    //     .key: unique name for stored value
+    //     .val: any javascript value that can be stored as json (or undefined to remove key)
     // resolve: called when value has been stored (or removed for undefined)
     // reject: called if there is an error storing value
     //     error: Error object
     // return: Promise
-    // ex: SLFSRV.store.set( "favoritColor", "green" ).next( function(){} );
+    // ex: SLFSRV.store.set( {key:"favoritColor", val:"green"} ).next( function(){} );
 
 <a name="slfsrv-store-list"></a>
 ### SLFSRV.store.list() - list all stored keys
 
 ##### callback version:
 
-    SLFSRV.store.list( onsuccess<function(keys<string array>){}>,
+    SLFSRV.store.list( args<object { }>,
+                       onsuccess<function(keys<string array>){}>,
                        onerror<optional function(error<Error>){}> )
+    // args: there are currently no arguments to this call
     // onsuccess: function called with an array of stored key names
     //     keys: array of stored key names
     // onerror: called if there is an error (rare that this would happen)
     //     error: Error object
     // return: undefined
-    // ex: SLFSRV.store.list( function(keys) {
+    // ex: SLFSRV.store.list( {}, function(keys) {
     //         SLFSRV.alert( "stored keys are:\n" + keys.join("\n") );
     //     });
 
 ##### promise version:
 
-    SLFSRV.store.list( )
+    SLFSRV.store.list( args<object { } )
                 .then( resolve<function(keys<string array>){}>,
                        reject<optional function(error<Error>){}> )
+    // args: there are currently no arguments to this call
     // resolve: function called with an array of stored key names
     //     keys: array of stored key names
     // reject: called if there is an error (rare that this would happen)
     //     error: Error object
     // return: Promise
-    // ex: SLFSRV.store.list().then( function(keys) {
+    // ex: SLFSRV.store.list({}).then( function(keys) {
     //         SLFSRV.alert( "stored keys are:\n" + keys.join("\n") );
     //     });
 
@@ -433,40 +443,42 @@ This function is particularly useful in slfsrv files created with the "-bundle" 
 
 ##### callback version:
 
-    SLFSRV.file.read( filename<string>, mode<optional string>,
+    SLFSRV.file.read( args<object { filename<string>, mode<optional string> }>,
                       onsuccess<function(contents<string>){}>,
                       onerror<optional function(error<Error>){}> )
-    // filename - path to file - if not a full file path then relative to cwd
-    // mode - options "binary" or "text" - binary returns full file in javascript
-    //        string of bytes - text returns unicode strings - defaults to "text"
+    // args:
+    //     .filename - path to file - if not a full file path then relative to cwd
+    //     . mode - options "binary" or "text" - binary returns full file in javascript
+    //              string of bytes - text returns unicode strings - defaults to "text"
     // contents - contents of the file (binary or text)
     // onerror: called if error reading file
     //     error: Error object
     // return: undefined
-    // ex: SLFSRV.file.read( "config.txt", "binary", function(contents) {
+    // ex: SLFSRV.file.read( { filename:"config.txt", mode:"binary" }, function(contents) {
     //         SLFSRV.alert( "config.txt binary contents are:\n" + contents );
     //     }
-    //     SLFSRV.file.read( "config.txt", function(contents) {
+    //     SLFSRV.file.read( { filename:"config.txt" }, function(contents) {
     //         SLFSRV.alert( "config.txt text contents are:\n" + contents );
     //     }
 
 ##### promise version:
 
-    SLFSRV.file.read( filename<string>, mode<optional string> )
+    SLFSRV.file.read( args<object { filename<string>, mode<optional string> }> )
                .then( resolve<function (contents<string>){}>,
                       reject<optional function(error<Error>){}> )
-    // filename - path to file - if not a full file path then relative to cwd
-    // mode - options "binary" or "text" - binary returns full file in javascript
-    //        string of bytes - text returns unicode strings - defaults to "text"
+    // args:
+    //     .filename - path to file - if not a full file path then relative to cwd
+    //     . mode - options "binary" or "text" - binary returns full file in javascript
+    //              string of bytes - text returns unicode strings - defaults to "text"
     // resolve: function called with the contents of the file read
     //     contents - contents of the file (binary or text)
     // reject: called if error getting directory list
     //     error: Error object
     // return: Promise
-    // ex: SLFSRV.file.read( "config.txt", "binary" ).then( function(contents) {
+    // ex: SLFSRV.file.read( { filename:"config.txt", mode:"binary" } ).then( function(contents) {
     //         SLFSRV.alert( "config.txt binary contents are:\n" + contents );
     //     } );
-    //     SLFSRV.file.read( "config.txt" ).then(function(contents) {
+    //     SLFSRV.file.read( { filename:"config.txt" } ).then(function(contents) {
     //         SLFSRV.alert( "config.txt text contents are:\n" + contents );
     //     })["catch"](function(e){
     //         msg += "ERROR READING FILE: " + e;
@@ -477,51 +489,53 @@ This function is particularly useful in slfsrv files created with the "-bundle" 
 
 ##### callback version:
 
-    SLFSRV.file.write( filename<string>, mode<optional string>, contents<string>,
+    SLFSRV.file.write( args<object { filename<string>, mode<optional string>, contents<string> }>,
                        onsuccess<optional function(){}>,
                        onerror<optional function(error<Error>){}> )
-    // filename - path to file - if not a full file path then relative to cwd
-    // mode - options "binary" or "text", and "create" or "append"
-    //        "binary" writes bytes - "text" writes unicode (utf-8) strings
-    //        "create" creates (or overwrites) file - "append" appends to file (or creates)
-    //        default: "text,create"
-    // contents - contents of the file (binary or text)
+    // args:
+    //     .filename - path to file - if not a full file path then relative to cwd
+    //     .mode - options "binary" or "text", and "create" or "append"
+    //             "binary" writes bytes - "text" writes unicode (utf-8) strings
+    //             "create" creates (or overwrites) file - "append" appends to file (or creates)
+    //             default: "text,create"
+    //      .contents - contents of the file (binary or text)
     // onsuccess: called after file has been written
     // onerror: called if error writing file
     //     error: Error object
     // return: undefined
-    // ex: SLFSRV.file.write( "data.bin", "binary,append", "owl\x89\x43cat", function() {
+    // ex: SLFSRV.file.write( { filename:"data.bin", mode:"binary,append", contents:"owl\x89\x43cat"}, function() {
     //         SLFSRV.alert( "binary data has been appended to data.bin" );
     //     }
-    //     SLFSRV.file.write( "data1.txt", "555.333.2222", function() {
+    //     SLFSRV.file.write( { filename:"data1.txt", contents:"555.333.2222" }, function() {
     //         SLFSRV.alert( "data1.txt was created, and data written in text mode" );
     //     }
-    //     SLFSRV.file.write( "data2.txt", "text,create", "555.333.2222", function() {
+    //     SLFSRV.file.write( { filename:"data2.txt", mode:"text,create", contents:"555.333.2222" }, function() {
     //         SLFSRV.alert( "data2.txt was created, and data written in text mode" );
     //     }
 
 ##### promise version:
 
-    SLFSRV.file.write( filename<string>, mode<optional string>, contents<string> )
+    SLFSRV.file.write( args<object { filename<string>, mode<optional string>, contents<string> }> )
                .then( resolve<function (){}>,
                       reject<optional function(error<Error>){}> )
-    // filename - path to file - if not a full file path then relative to cwd
-    // mode - options "binary" or "text", and "create" or "append"
-    //        "binary" writes bytes - "text" writes unicode (utf-8) strings
-    //        "create" creates (or overwrites) file - "append" appends to file (or creates)
-    //        default: "text,create"
-    // contents - contents of the file (binary or text)
+    // args:
+    //     .filename - path to file - if not a full file path then relative to cwd
+    //     .mode - options "binary" or "text", and "create" or "append"
+    //             "binary" writes bytes - "text" writes unicode (utf-8) strings
+    //             "create" creates (or overwrites) file - "append" appends to file (or creates)
+    //             default: "text,create"
+    //      .contents - contents of the file (binary or text)
     // resolve: function called after file has been written
     // reject: called if error getting directory list
     //     error: Error object
     // return: Promise
-    // ex: SLFSRV.file.write( "data.bin", "binary,append", "owl\x89\x43cat"  ).then( function() {
+    // ex: SLFSRV.file.write( { filename:"data.bin", mode:"binary,append", contents:"owl\x89\x43cat" } ).then( function() {
     //         SLFSRV.alert( "binary data has been appended to data.bin" );
     //     } );
-    //     SLFSRV.file.write( "data1.txt", "555.333.2222" ).then(function() {
+    //     SLFSRV.file.write( { filename:"data1.txt", content:"555.333.2222" } ).then(function() {
     //         SLFSRV.alert( "data1.txt was created, and data written in text mode" );
     //     });
-    //     SLFSRV.file.write( "data2.txt", "text,create", "555.333.2222" ).then(function() {
+    //     SLFSRV.file.write( { filename:"data2.txt", mode:"text,create", content:"555.333.2222" } ).then(function() {
     //         SLFSRV.alert( "data2.txt was created, and data written in text mode" );
     //     })["catch"](function(e){
     //         msg += "ERROR WRITING FILE: " + e;
@@ -532,30 +546,32 @@ This function is particularly useful in slfsrv files created with the "-bundle" 
 
 ##### callback version:
 
-    SLFSRV.file.exists( filename<string>,
+    SLFSRV.file.exists( args<object { filename<string> }>,
                         onsuccess<function(exists<bool>){}>,
                         onerror<optional function(error<Error>){}> )
-    // filename - path to file - if not a full file path then relative to cwd
+    // args:
+    //     .filename - path to file - if not a full file path then relative to cwd
     // exists: true if file exists (and not a directory), else false
     // onerror: called if there is an error (rare that this would happen)
     //     error: Error object
     // return: undefined
-    // ex: SLFSRV.file.exists( "config.txt", function(exists) {
+    // ex: SLFSRV.file.exists( {filename:"config.txt"}, function(exists) {
     //         SLFSRV.alert( "file " + (exists ? "DOES" : "DOES NOT") + " exist");
     //     }
 
 ##### promise version:
 
-    SLFSRV.file.exists( filename<string> )
+    SLFSRV.file.exists( args<object { filename<string> }> )
                .then( resolve<function (exists<bool>){}>,
                       reject<optional function(error<Error>){}> )
-    // filename - path to file - if not a full file path then relative to cwd
+    // args:
+    //     .filename - path to file - if not a full file path then relative to cwd
     // resolve: function called with the determination if file exists
     //     exists: true if file exists (and not a directory), else false
     // reject: called if there is an error (rare that this would happen)
     //     error: Error object
     // return: Promise
-    // ex: SLFSRV.file.exists( "config.txt" ).then( function(exists) {
+    // ex: SLFSRV.file.exists( {filename:"config.txt"} ).then( function(exists) {
     //         SLFSRV.alert( "file " + (exists ? "DOES" : "DOES NOT") + " exist");
     //     } );
 
@@ -564,27 +580,29 @@ This function is particularly useful in slfsrv files created with the "-bundle" 
 
 ##### callback version:
 
-    SLFSRV.file.remove( filename<string>,
+    SLFSRV.file.remove( args<object { filename<string> }>,
                         onsuccess<optional function(){}>,
                         onerror<optional function(error<Error>){}> )
-    // filename - path to file - if not a full file path then relative to cwd
+    // args:
+    //     .filename - path to file - if not a full file path then relative to cwd
     // onsuccess: called if all is well
     // onerror: called if there is an error removing the file
     //     error: Error object
     // return: undefined
-    // ex: SLFSRV.file.remove( "tempdata.txt", function(){} );
+    // ex: SLFSRV.file.remove( {filename:"tempdata.txt"}, function(){} );
 
 ##### promise version:
 
-    SLFSRV.file.remove( filename<string> )
+    SLFSRV.file.remove( args<object { filename<string> }> )
                .then( resolve<optional function(){}>,
                       reject<optional function(error<Error>){}> )
-    // filename - path to file - if not a full file path then relative to cwd
+    // args:
+    //     .filename - path to file - if not a full file path then relative to cwd
     // resolve: called if all is well
     // reject: called if there is an error removing the file
     //     error: Error object
     // return: Promise
-    // ex: SLFSRV.file.remove( "tempdata.txt" ).next( function(){} );
+    // ex: SLFSRV.file.remove( {filename:"tempdata.txt"} ).next( function(){} );
 
 ------------------------------------------------------------
 
@@ -663,10 +681,12 @@ This function is particularly useful in slfsrv files created with the "-bundle" 
 
 ##### callback version:
 
-    SLFSRV.dir.list( dirname<optional string>, callback<function (list<array>){}>,
+    SLFSRV.dir.list( args<object { dirname<optional string> }>,
+                     callback<function (list<array>){}>,
                      onerror<optional function(error<Error>){}> )
-    // dirname: name of directory to list, relaive to current working directory if root not
-    //          specified; if this parameter not supplied then will return from current working directory
+    // args:
+    //     .dirname: name of directory to list, relaitve to current working directory if root not
+    //               specified; if this parameter not supplied then will return from current working directory
     // callback: called to return directory listing
     //     list: array of file listing, where each entry has these values
     //         .name<string> - name of the file or subdirectory
@@ -677,7 +697,7 @@ This function is particularly useful in slfsrv files created with the "-bundle" 
     // onerror: called if error getting directory list
     //     error: Error object
     // return: undefined
-    // ex: SLFSRV.dir.list( function(list) {
+    // ex: SLFSRV.dir.list( {}, function(list) {
     //         for ( var i=0; i < list.length; i++ ) {
     //             if ( !list[file].dir ) {
     //                 SLFSRV.alert( "file " + list[file].name );
@@ -687,11 +707,12 @@ This function is particularly useful in slfsrv files created with the "-bundle" 
 
 ##### promise version:
 
-    SLFSRV.dir.list( dirname<optional string> )
+    SLFSRV.dir.list( args<object { dirname<optional string> }> )
               .then( resolve<function (list<array>){}>,
                      reject<optional function(error<Error>){}> )
-    // dirname: name of directory to list, relaive to current working directory if root not
-    //          specified; if this parameter not supplied then will return from current working directory
+    // args:
+    //     .dirname: name of directory to list, relaitve to current working directory if root not
+    //               specified; if this parameter not supplied then will return from current working directory
     // reject: called to return directory listing
     //     list: array of file listing, where each entry has these values
     //         .name<string> - name of the file or subdirectory
@@ -702,7 +723,7 @@ This function is particularly useful in slfsrv files created with the "-bundle" 
     // reject: called if error getting directory list
     //     error: Error object
     // return: Promise
-    // ex: SLFSRV.dir.list().next( function(list) {
+    // ex: SLFSRV.dir.list({}).next( function(list) {
     //         for ( var i=0; i < list.length; i++ ) {
     //             if ( !list[file].dir ) {
     //                 SLFSRV.alert( "file " + list[file].name );
@@ -715,28 +736,31 @@ This function is particularly useful in slfsrv files created with the "-bundle" 
 
 ##### callback version:
 
-    SLFSRV.dir.getcwd( onsuccess<function(cwd<string>){}>,
+    SLFSRV.dir.getcwd( args<object { }>,
+                       onsuccess<function(cwd<string>){}>,
                        onerror<optional function(error<Error>){}>  )
+    // args: there are currently no arguments to this call
     // onsuccess: function called with the name of the current directory
     //     cwd: current working directory
     // onerror: called if there is an error, which is very much not expected
     //     error: Error object
     // return: undefined
-    // ex: SLFSRV.dir.getcwd( function(cwd) {
+    // ex: SLFSRV.dir.getcwd( {}, function(cwd) {
     //         SLFSRV.alert( "current directory is " + cwd );
     //     });
 
 ##### promise version:
 
-    SLFSRV.dir.getcwd()
+    SLFSRV.dir.getcwd( args<object { }> )
               .then( resolve<function(cwd<string>){}>,
                      reject<optional function(error<Error>){}> )
+    // args: there are currently no arguments to this call
     // resolve: function called with the name of the current directory
     //     cwd: current working directory
     // reject: called if there is an error, which is very much not expected
     //     error: Error object
     // return: Promise
-    // ex: SLFSRV.dir.getcwd().then(function(cwd) {
+    // ex: SLFSRV.dir.getcwd({}).then(function(cwd) {
     //         SLFSRV.alert( "current directory is " + cwd );
     //     });
 
@@ -745,56 +769,61 @@ This function is particularly useful in slfsrv files created with the "-bundle" 
 
 ##### callback version:
 
-    SLFSRV.dir.setcwd( cwd<string>, onsuccess<function(){}>,
+    SLFSRV.dir.setcwd( args<object { dirname<optional string> }>,
+                       onsuccess<function(){}>,
                        onerror<optional function(error<Error>){}> )
-    // cwd: relative path to change current directory to
+    // args:
+    //     .dirname - relative path to change current directory to
     // onsuccess: called when directory has changed
     // onerror: called if there is an error changing path
     //     error: Error object
     // return: undefined
-    // ex: SLFSRV.dir.setcwd( "../parent-dir-name", function(){} );
+    // ex: SLFSRV.dir.setcwd( {dirname:"../parent-dir-name"}, function(){} );
 
 ##### promise version:
 
-    SLFSRV.dir.setcwd( cwd<string> )
+    SLFSRV.dir.setcwd( args<object { dirname<optional string> }> )
               .then( resolve<optional function(){}>,
                      reject<optional function(error<Error>){}> )
-    // cwd: relative path to change current directory to
+    // args:
+    //     .dirname - relative path to change current directory to
     // resolve: function called after current working directory has changed
     // reject: called if there is an error changing path
     //     error: Error object
     // return: Promise
-    // ex: SLFSRV.dir.setcwd( "../parent-dir-name" ).next(function(){});
+    // ex: SLFSRV.dir.setcwd( {dirname:"../parent-dir-name"} ).next(function(){});
 
 <a name="slfsrv-dir-exists"></a>
 ### SLFSRV.dir.exists() - does this directory exist
 
 ##### callback version:
 
-    SLFSRV.dir.exists( dirname<string>,
+    SLFSRV.dir.exists( args<object { dirname<optional string> }>,
                        onsuccess<function(exists<bool>){}>,
                        onerror<optional function(error<Error>){}> )
-    // dirname - path to direcotry - if not a full path then relative to cwd
+    // args:
+    //     .dirname - path to direcotry - if not a full path then relative to cwd
     // exists: true if directory exists, else false
     // onerror: called if there is an error (rare that this would happen)
     //     error: Error object
     // return: undefined
-    // ex: SLFSRV.dir.exists( "pebbled", function(exists) {
+    // ex: SLFSRV.dir.exists( {dirname:"pebbled"}, function(exists) {
     //         SLFSRV.alert( "directory " + (exists ? "DOES" : "DOES NOT") + " exist");
     //     }
 
 ##### promise version:
 
-    SLFSRV.dir.exists( dirname<string> )
+    SLFSRV.dir.exists( args<object { dirname<optional string> }> )
               .then( resolve<function (exists<bool>){}>,
                      reject<optional function(error<Error>){}> )
-    // dirname - path to directory - if not a full path then relative to cwd
+    // args:
+    //     .dirname - path to direcotry - if not a full path then relative to cwd
     // resolve: function called with the determination if directory exists
     //     exists: true if directory exists, else false
     // reject: called if there is an error (rare that this would happen)
     //     error: Error object
     // return: Promise
-    // ex: SLFSRV.dir.exists( "pebbles" ).then( function(exists) {
+    // ex: SLFSRV.dir.exists( {dirname:"pebbles"} ).then( function(exists) {
     //         SLFSRV.alert( "directory " + (exists ? "DOES" : "DOES NOT") + " exist");
     //     } );
 
@@ -808,30 +837,33 @@ This function is particularly useful in slfsrv files created with the "-bundle" 
 
 ##### callback version:
 
-    SLFSRV.env.get( key<string>, onsuccess<function (value<string>){}>,
-                                 onerror<optional function(error<Error>){}> )
-    // key: name of the environment variable to retrieve
+    SLFSRV.env.get( args<object { key<string> }>,
+                    onsuccess<function (value<string>){}>,
+                    onerror<optional function(error<Error>){}> )
+    // args:
+    //     .key: name of the environment variable to retrieve
     // onsuccess: called to return environment value
     //     value: value of the variable, may be "" if no such variable
     // onerror: called if there is an error, which is very much not expected
     //     error: Error object
     // return: undefined
-    // ex: SLFSRV.env.get( "PATH", function(path) {
+    // ex: SLFSRV.env.get( {key:"PATH"}, function(path) {
     //         SLFSRV.alert( "current path is " + path );
     //     });
 
 ##### promise version:
 
-    SLFSRV.env.get( key<string> )
+    SLFSRV.env.get( args<object { key<string> }> )
               .then( resolve<function (value<string>){}>,
                      reject<optional function(error<Error>){}> )
-    // key: name of the environment variable to retrieve
+    // args:
+    //     .key: name of the environment variable to retrieve
     // resolve: called to return environment value
     //     value: value of the variable, may be "" if no such variable
     // reject: called if there is an error, which is very much not expected
     //     error: Error object
     // return: Promise
-    // ex: SLFSRV.env.get( "PATH" ).next( function(path) {
+    // ex: SLFSRV.env.get( {key:"PATH"} ).next( function(path) {
     //         SLFSRV.alert( "current path is " + path );
     //     });
 
@@ -840,29 +872,31 @@ This function is particularly useful in slfsrv files created with the "-bundle" 
 
 ##### callback version:
 
-    SLFSRV.env.set( key<string>, value<string>,
+    SLFSRV.env.set( args<object { key<string>, val<string> }>,
                     onsuccess<optional function(){}>,
                     onerror<optional function(error<Error>){}> )
-    // key: environment variable to set
-    // value: value of that variable
+    // args:
+    //     .key: environment variable to set
+    //     .val: value of that variable
     // onsuccess: called if all is well
     // onerror: called if there is an error changing path
     //     error: Error object
     // return: undefined
-    // ex: SLFSRV.env.set( "FEELING", "happy", function(){} );
+    // ex: SLFSRV.env.set( {key:"FEELING", val:"happy"}, function(){} );
 
 ##### promise version:
 
-    SLFSRV.env.set( key<string>, value<string> )
+    SLFSRV.env.set( args<object { key<string>, val<string> }> )
               .then( resolve<optional function(){}>,
                      reject<optional function(error<Error>){}> )
-    // key: environment variable to set
-    // value: value of that variable
+    // args:
+    //     .key: environment variable to set
+    //     .val: value of that variable
     // resolve: called if all is well
     // reject: called if there is an error changing path
     //     error: Error object
     // return: Promise
-    // ex: SLFSRV.env.set( "FEELING", "happy" ).next( function(){} );
+    // ex: SLFSRV.env.set( {key:"FEELING", val:"happy"} ).next( function(){} );
 
 ------------------------------------------------------------
 

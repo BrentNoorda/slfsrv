@@ -55,11 +55,11 @@ function browse_local_file(filespec) {
 }
 
 function record_menu_time(dataKey,callback) {
-    SLFSRV.store.set( dataKey, Math.floor((new Date()).getTime() / 1000), callback );
+    SLFSRV.store.set( {key:dataKey, val:Math.floor((new Date()).getTime() / 1000)}, callback );
 }
 
 function set_visible_if_not_selected_recently(dataKey,minutesSincePreviousSelection,setVisible) {
-    SLFSRV.store.get(dataKey,0,function(thenEpochTime){
+    SLFSRV.store.get({key:dataKey,defaultVal:0},function(thenEpochTime){
         var nowEpochTime, elapsedMinutes;
         nowEpochTime = (new Date()).getTime() / 1000;
         elapsedMinutes = (nowEpochTime - thenEpochTime) / 60;
@@ -70,7 +70,7 @@ function set_visible_if_not_selected_recently(dataKey,minutesSincePreviousSelect
 }
 
 function set_visible_if_not_selected_today(dataKey,setVisible) {
-    SLFSRV.store.get(dataKey,0,function(epochTime){
+    SLFSRV.store.get({key:dataKey,defaultVal:0},function(epochTime){
         var now = new Date(), then = new Date( epochTime * 1000 );
         if ( (now.getDate() !== then.getDate()) || (now.getMonth() !== then.getMonth()) || (now.getFullYear() !== then.getFullYear()) ) {
             setVisible();

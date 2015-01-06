@@ -18,10 +18,10 @@ function error(msg) {
 
 function change_to_self_serving_root_dir(cwd_callback) {
     // full path will be two directories above this one
-    SLFSRV.dir.getcwd(function(original_cwd){
-        SLFSRV.dir.setcwd(SLFSRV.ROOTPATH,function(){
-            SLFSRV.dir.setcwd("..",function(){
-                SLFSRV.dir.setcwd("..",function(){
+    SLFSRV.dir.getcwd({},function(original_cwd){
+        SLFSRV.dir.setcwd({dirname:SLFSRV.ROOTPATH},function(){
+            SLFSRV.dir.setcwd({dirname:".."},function(){
+                SLFSRV.dir.setcwd({dirname:".."},function(){
                     cwd_callback(original_cwd);
                 });
             });
@@ -30,7 +30,7 @@ function change_to_self_serving_root_dir(cwd_callback) {
 }
 
 function restore_original_cwd(original_cwd,callback) {
-    SLFSRV.dir.setcwd(original_cwd,function(){
+    SLFSRV.dir.setcwd({dirname:original_cwd},function(){
         callback(callback);
     });
 }
@@ -38,7 +38,7 @@ function restore_original_cwd(original_cwd,callback) {
 function list_all(callback) {
 
     function list_current_dir(indent,callback) {
-        SLFSRV.dir.list(function(list){
+        SLFSRV.dir.list({},function(list){
 
             function display_next_list_item() {
                 if ( list.length === 0 ) {
@@ -48,9 +48,9 @@ function list_all(callback) {
                     li = list.shift();
                     output(indent + li.name + '\n');
                     if ( li.dir ) {
-                        SLFSRV.dir.setcwd(li.name,function(){
+                        SLFSRV.dir.setcwd({dirname:li.name},function(){
                             list_current_dir(indent+"\t",function(){
-                                SLFSRV.dir.setcwd("..",display_next_list_item);
+                                SLFSRV.dir.setcwd({dirname:".."},display_next_list_item);
                             });
                         });
                     } else {

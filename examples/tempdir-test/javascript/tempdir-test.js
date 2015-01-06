@@ -40,20 +40,20 @@ function test() {
         name: 'simply create a blank, unnamed tempdir, and it better be empty',
         test: function() {
             var tempDir;
-            SLFSRV.tempdir().then( function(dirPath) {
+            SLFSRV.tempdir({}).then( function(dirPath) {
                 output("tempdir() dirpath = " + dirPath);
 
                 // verify that the directory exists, and is not empty
                 tempDir = dirPath;
-                return SLFSRV.dir.exists( dirPath );
+                return SLFSRV.dir.exists( {dirname:dirPath} );
             }).then( function( exists ) {
                 output("confirmed that " + tempDir + " exists");
-                return SLFSRV.dir.list( tempDir );
+                return SLFSRV.dir.list( {dirname:tempDir} );
             }).then( function(list) {
                 if ( list.length === 0 ) {
                     output("confirmed that " + tempDir + " contains no files");
                     // if called again it better return the same dirname
-                    return SLFSRV.tempdir();
+                    return SLFSRV.tempdir({});
                 } else {
                     throw new Error("tempdir \"" + tempDir + "\" should be empty but contains " + list.length + " files");
                 }
@@ -73,20 +73,20 @@ function test() {
         name: 'simply create a labeled blank, but it should still be empty',
         test: function() {
             var tempDir;
-            SLFSRV.tempdir("unmatched-name").then( function(dirPath) {
+            SLFSRV.tempdir({unpackDir:"unmatched-name"}).then( function(dirPath) {
                 output("tempdir() dirpath = " + dirPath);
 
                 // verify that the directory exists, and is not empty
                 tempDir = dirPath;
-                return SLFSRV.dir.exists( dirPath );
+                return SLFSRV.dir.exists( {dirname:dirPath} );
             }).then( function( exists ) {
                 output("confirmed that " + tempDir + " exists");
-                return SLFSRV.dir.list( tempDir );
+                return SLFSRV.dir.list( {dirname:tempDir} );
             }).then( function(list) {
                 if ( list.length === 0 ) {
                     output("confirmed that " + tempDir + " contains no files");
                     // if called again it better return the same dirname
-                    return SLFSRV.tempdir("unmatched-name");
+                    return SLFSRV.tempdir({unpackDir:"unmatched-name"});
                 } else {
                     throw new Error("tempdir \"" + tempDir + "\" should be empty but contains " + list.length + " files");
                 }
@@ -106,15 +106,15 @@ function test() {
         name: 'create tempdir from the "shell-scripts" and make sure the correct files are there',
         test: function() {
             var tempDir;
-            SLFSRV.tempdir("shell-scripts").then( function(dirPath) {
+            SLFSRV.tempdir({unpackDir:"shell-scripts"}).then( function(dirPath) {
                 output("tempdir() dirpath = " + dirPath);
 
                 // verify that the directory exists, and is not empty
                 tempDir = dirPath;
-                return SLFSRV.dir.exists( dirPath );
+                return SLFSRV.dir.exists( {dirname:dirPath} );
             }).then( function( exists ) {
                 output("confirmed that " + tempDir + " exists");
-                return SLFSRV.dir.list( tempDir );
+                return SLFSRV.dir.list( {dirname:tempDir} );
             }).then( function(list) {
                 // verify that this contains only the files "very-simple-bash.sh" and "very-simple-batch.bat"
                 var i, name, fileCount = 0;
@@ -133,7 +133,7 @@ function test() {
                 } else {
                     output("confirmed that " + tempDir + " contains only the files we expect");
                     // if called again it better return the same dirname
-                    return SLFSRV.dir.list( tempDir + SLFSRV.dir.SLASH + "testdir" );
+                    return SLFSRV.dir.list( {dirname:tempDir + SLFSRV.dir.SLASH + "testdir"} );
                 }
             }).then( function(list) {
                 // verify that this contains only the file "unusedfile.txt"
@@ -153,7 +153,7 @@ function test() {
                 } else {
                     output("confirmed that " + (tempDir + SLFSRV.dir.SLASH + "testdir") + " contains only the files we expect");
                     // if called again it better return the same dirname
-                    return SLFSRV.tempdir("shell-scripts");
+                    return SLFSRV.tempdir({unpackDir:"shell-scripts"});
                 }
             }).then( function(dirPath) {
                 if ( dirPath === tempDir ) {
@@ -170,7 +170,7 @@ function test() {
     },{
         name: 'verify that we can execute an unpacked shell script correctly',
         test: function() {
-            SLFSRV.tempdir("shell-scripts").then( function(dir) {
+            SLFSRV.tempdir({unpackDir:"shell-scripts"}).then( function(dir) {
                 output("tempdir() dirpath = " + dir);
 
                 // execute the os-appropriate shell script

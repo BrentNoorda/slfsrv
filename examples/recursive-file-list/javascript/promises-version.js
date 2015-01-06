@@ -21,13 +21,13 @@ function change_to_self_serving_root_dir() {
     // full path will be two directories above this one
     return new Promise(function(resolve,reject){
         var original_cwd;
-        SLFSRV.dir.getcwd().then(function(cwd){
+        SLFSRV.dir.getcwd({}).then(function(cwd){
             original_cwd = cwd;
-            return SLFSRV.dir.setcwd(SLFSRV.ROOTPATH);
+            return SLFSRV.dir.setcwd({dirname:SLFSRV.ROOTPATH});
         }).then(function(){
-            return SLFSRV.dir.setcwd("..");
+            return SLFSRV.dir.setcwd({dirname:".."});
         }).then(function(){
-            return SLFSRV.dir.setcwd("..");
+            return SLFSRV.dir.setcwd({dirname:".."});
         }).then(function(){
             resolve(original_cwd);
         });
@@ -36,7 +36,7 @@ function change_to_self_serving_root_dir() {
 
 function restore_original_cwd(original_cwd) {
     return new Promise(function(resolve,reject){
-        SLFSRV.dir.setcwd(original_cwd).then(resolve);
+        SLFSRV.dir.setcwd({dirname:original_cwd}).then(resolve);
     });
 }
 
@@ -46,7 +46,7 @@ function list_all() {
 
         function list_current_dir(indent) {
             return new Promise(function(resolve,reject){
-                SLFSRV.dir.list().then(function(list){
+                SLFSRV.dir.list({}).then(function(list){
 
                     function display_next_list_item() {
                         if ( list.length === 0 ) {
@@ -56,10 +56,10 @@ function list_all() {
                             li = list.shift();
                             output(indent + li.name + '\n');
                             if ( li.dir ) {
-                                SLFSRV.dir.setcwd(li.name).then(function(){
+                                SLFSRV.dir.setcwd({dirname:li.name}).then(function(){
                                     return list_current_dir(indent+"\t");
                                 }).then(function(){
-                                    return SLFSRV.dir.setcwd("..");
+                                    return SLFSRV.dir.setcwd({dirname:".."});
                                 }).then(
                                     display_next_list_item
                                 );

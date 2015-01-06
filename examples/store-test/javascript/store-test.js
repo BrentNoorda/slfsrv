@@ -38,7 +38,7 @@ function test() {
     tests = [{
         name: 'delete store in case any old data is there',
         test: function() {
-            SLFSRV.store.list().then(function(keys){
+            SLFSRV.store.list({}).then(function(keys){
                 function delete_first_key() {
                     if ( keys.length === 0 ) {
                         output("done");
@@ -46,7 +46,7 @@ function test() {
                     } else {
                         var key = keys.shift();
                         output("deleting key: "+key);
-                        SLFSRV.store.set(key,undefined,function(){
+                        SLFSRV.store.set({key:key,val:undefined},function(){
                             delete_first_key();
                         },function(err){
                             error(err);
@@ -61,7 +61,7 @@ function test() {
     },{
         name: 'store must now be empty',
         test: function() {
-            SLFSRV.store.list(function(keys){
+            SLFSRV.store.list({},function(keys){
                 if ( keys.length !== 0 ) {
                     error("wasn't empty, instead had these keys: " + JSON.stringify(keys));
                 } else {
@@ -75,7 +75,7 @@ function test() {
     },{
         name: 'read key "foo" should be undefined',
         test: function() {
-            SLFSRV.store.get("foo",function(value){
+            SLFSRV.store.get({key:"foo"},function(value){
                 output("value = " + value);
                 if ( value !== undefined ) {
                     error("value should have been undefined");
@@ -89,7 +89,7 @@ function test() {
     },{
         name: 'write key "foo" as 42',
         test: function() {
-            SLFSRV.store.set("foo",42,function(){
+            SLFSRV.store.set({key:"foo",val:42},function(){
                 output("done");
                 next_test();
             },function(err){
@@ -99,7 +99,7 @@ function test() {
     },{
         name: 'read key "foo" should be 42',
         test: function() {
-            SLFSRV.store.get("foo",function(value){
+            SLFSRV.store.get({key:"foo"},function(value){
                 output("value = " + value);
                 if ( value !== 42 ) {
                     error("value should have been 42");
@@ -123,7 +123,7 @@ function test() {
                 },
                 wealth: 1000000.0
             };
-            SLFSRV.store.set("complex-object",obj,function(){
+            SLFSRV.store.set({key:"complex-object",val:obj},function(){
                 output("done");
                 next_test();
             },function(err){
@@ -133,7 +133,7 @@ function test() {
     },{
         name: 'the only objects should now be "foo" and "complex-object"',
         test: function() {
-            SLFSRV.store.list(function(keys){
+            SLFSRV.store.list({},function(keys){
                 if ( keys.length !== 2 ) {
                     error("keys.length = " + keys.length + "but expected 2");
                 } else {
@@ -153,7 +153,7 @@ function test() {
     },{
         name: 'verify contents of "foo"',
         test: function() {
-            SLFSRV.store.get("foo",function(value){
+            SLFSRV.store.get({key:"foo"},function(value){
                 if ( value !== 42 ) {
                     error("value was " + value + " but should have been 42");
                 } else {
@@ -167,7 +167,7 @@ function test() {
     },{
         name: 'verify contents of "complex-object"',
         test: function() {
-            SLFSRV.store.get("complex-object",function(obj){
+            SLFSRV.store.get({key:"complex-object"},function(obj){
                 if ( !('wealth' in obj) ) {
                     error('"wealth" field is missing');
                 } else if ( obj.wealth !== 1000000 ) {

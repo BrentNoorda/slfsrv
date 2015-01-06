@@ -10,7 +10,7 @@ function show_file_source(fspec) {
     document.getElementById("insert-links-here").appendChild(li);
 
     fullspec = SLFSRV.ROOTPATH + ("/" + fspec).replace(/\//g,SLFSRV.dir.SLASH);
-    SLFSRV.file.read(fullspec,function(contents){
+    SLFSRV.file.read({filename:fullspec},function(contents){
         var div, html;
         html = '<a name="' + fspec +'"></a><h3>' + SLFSRV.esc4html(fspec.replace(/\//g,SLFSRV.dir.SLASH)) + '</h3>';
         html += '<code><pre>';

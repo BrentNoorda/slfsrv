@@ -53,7 +53,7 @@ function shell() {
                     lastfile = lastword.substring(lastslash+1);
                 }
 
-                SLFSRV.dir.list((lastdir==="")?".":lastdir).then(function(list){
+                SLFSRV.dir.list({dirname:(lastdir==="")?".":lastdir}).then(function(list){
                     var i, len, candidate, candidates, lastfileLower, a, isDir;
 
                     if ( el.size() === 0 ) {
@@ -174,19 +174,19 @@ function shell() {
 
             if ( cmdParts[0].toLowerCase() === "cd" || cmdParts[0].toLowerCase() === "chdir" ) {
                 if ( cmdParts.length === 1 ) {
-                    SLFSRV.dir.getcwd(function(cwd){
+                    SLFSRV.dir.getcwd({},function(cwd){
                         onSuccess({exitStatus:0,stdout:cwd,stderr:""});
                     });
                 } else {
                     cmdParts.shift();
-                    SLFSRV.dir.setcwd(cmdParts.join(' '),function(ret){
-                        SLFSRV.dir.getcwd(function(cwd){
+                    SLFSRV.dir.setcwd({dirname:cmdParts.join(' ')},function(ret){
+                        SLFSRV.dir.getcwd({},function(cwd){
                             onSuccess({exitStatus:0,stdout:cwd,stderr:""});
                         });
                     },onError);
                 }
             } else if ( cmdParts.length === 1 && cmdParts[0].toLowerCase() === "pwd" ) {
-                SLFSRV.dir.getcwd(function(cwd){
+                SLFSRV.dir.getcwd({},function(cwd){
                     onSuccess({exitStatus:0,stdout:cwd,stderr:""});
                 });
             } else {
@@ -202,7 +202,7 @@ function shell() {
             }
         };
 
-        SLFSRV.dir.getcwd(gotCwd);
+        SLFSRV.dir.getcwd({},gotCwd);
     };
 
     prompt();
