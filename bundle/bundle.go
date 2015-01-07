@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 )
 
-const Version string = "0.0.1"
+const Version string = "0.0.2"
 
 /***************** SelfserverReadSeeker - ReadSeeker implementation *****************/
 
