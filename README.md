@@ -124,7 +124,7 @@ From `#slfsrv --help`
       slfsrv -compile /myapp -compile-from /tools/ss/win/slfsrv.exe
       slfsrv c:\user\me photo/tools/photoview.html
       slfsrv c:\user\me photo/tools/photoview.html -config-file ./config.json
-    VERSION: 0.0.1
+    VERSION: 0.0.2
 
 ------------------------------------------------------------------------------
 <a name="jsapi"></a>
@@ -244,6 +244,8 @@ in the Finder, or by using the "open..." command in Terminal, follow these instr
 ### History
 
 * 2014/10/07 - version 0.0.1 - first release
+
+* 2015/01/06 - version 0.0.2 - use gofmt; add config.json file; http.ServeContent for better delivery of large files; use named arguments insteast of parameters lists for most JS functions
 
 ------------------------------------------------------------------------------
 <a name="contact"></a>
