@@ -21,7 +21,7 @@ addMenuCategory( "Common", [
                 location.href = "http://calendar.google.com/";
             });
         },
-        img: "https://calendar.google.com/googlecalendar/images/favicon_v2013_" + (new Date()).getDate() + ".ico"
+        img: "https://www.gstatic.com/images/branding/product/2x/calendar_32dp.png"
     }),
     menuOption({
         title: "Workflowy",
@@ -38,7 +38,7 @@ addMenuCategory( "Don't look too often", [
                 location.href = "http://calendar.google.com/";
             });
         },
-        img: "https://calendar.google.com/googlecalendar/images/favicon_v2013_" + (new Date()).getDate() + ".ico",
+        img: "https://www.gstatic.com/images/branding/product/2x/calendar_32dp.png",
         description: "daily",
         visibleTest: function(setVisible) { set_visible_if_not_selected_today('Daily View Calendar',setVisible); }
     }),
@@ -225,12 +225,12 @@ addMenuCategory( "Nerdy", "http://www.kia-forums.com/images/Kia-Forums/smilies/t
     menuOption({
         title: "Stack Overflow",
         action: "http://stackoverflow.com/",
-        img: "http://cdn.sstatic.net/stackoverflow/img/favicon.ico"
+        img: "https://cdn.sstatic.net/Sites/stackoverflow/img/favicon.ico"
     }),
     menuOption({
         title: "QA/Testing Exchange",
         action: "http://sqa.stackexchange.com/",
-        img: "http://cdn.sstatic.net/sqa/img/favicon.ico"
+        img: "https://cdn.sstatic.net/Sites/sqa/img/favicon.ico"
     }),
     menuOption({
         title: "TechMeme",
